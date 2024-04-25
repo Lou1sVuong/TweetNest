@@ -2,7 +2,6 @@ import { Request, Response } from 'express'
 import usersService from '~/services/users.services'
 import { ParamsDictionary } from 'express-serve-static-core'
 import { RegisterReqBody } from '~/models/requests/user.requests'
-import { body } from 'express-validator'
 
 export const loginController = (req: Request, res: Response) => {
   const { email, password } = req.body
