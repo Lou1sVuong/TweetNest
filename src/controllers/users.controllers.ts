@@ -2,13 +2,14 @@ import { Request, Response } from 'express'
 import usersService from '~/services/users.services'
 import { ParamsDictionary } from 'express-serve-static-core'
 import { RegisterReqBody } from '~/models/requests/user.requests'
+import { ErrorWithStatus } from '~/models/errors'
 
 export const loginController = (req: Request, res: Response) => {
   const { email, password } = req.body
   if (email === 'xuanvuong@gmail.com' && password === 'X.vuong24') {
-    return res.json({ message: 'Login successfully' })
+    throw new ErrorWithStatus({ message: 'Login Successfully', status: 200 })
   }
-  return res.status(400).json({ error: 'Email or password is incorrect' })
+  throw new ErrorWithStatus({ message: 'Email or password is incorrect', status: 400 })
 }
 
 export const registerController = async (req: Request<ParamsDictionary, any, RegisterReqBody>, res: Response) => {
