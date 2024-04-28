@@ -11,6 +11,6 @@ Body: { "name": "string", "email": "string", "password": "string", "confirmPassw
  */
 usersRouters.post('/register', registerValidation, wrapRequestHandler(registerController))
 // usersRouters.post('/register', registerValidation, registerController)
-usersRouters.post('/login', loginValidation, loginController)
+usersRouters.post('/login', loginValidation, wrapRequestHandler(loginController))
 
 export default usersRouters

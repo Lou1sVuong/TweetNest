@@ -1,21 +1,52 @@
-import { error } from 'console'
 import { checkSchema } from 'express-validator'
 import { USERS_MESSAGES } from '~/constants/messages'
-import { ErrorWithStatus } from '~/models/errors'
+import databaseServices from '~/services/database.services'
 import usersService from '~/services/users.services'
 import { validate } from '~/utils/validation.utils'
 
 export const loginValidation = validate(
   checkSchema({
     email: {
-      notEmpty: true,
       trim: true,
-      isEmail: true
+      isEmail: {
+        errorMessage: USERS_MESSAGES.EMAIL_INVALID
+      },
+      custom: {
+        options: async (value, { req }) => {
+          const user = await databaseServices.users.findOne({ email: value })
+          if (user === null) {
+            throw new Error(USERS_MESSAGES.USER_NOT_FOUND)
+          }
+          req.user = user
+          return true
+        }
+      }
     },
     password: {
-      isString: true,
-      notEmpty: true,
-      trim: true
+      isString: {
+        errorMessage: USERS_MESSAGES.PASSWORD_MUST_BE_STRING
+      },
+      notEmpty: {
+        errorMessage: USERS_MESSAGES.PASSWORD_REQUIRED
+      },
+      isLength: {
+        options: {
+          min: 6,
+          max: 50
+        },
+        errorMessage: USERS_MESSAGES.PASSWORD_LENGTH
+      },
+      trim: true,
+      isStrongPassword: {
+        options: {
+          minLength: 6,
+          minLowercase: 1,
+          minUppercase: 1,
+          minNumbers: 1,
+          minSymbols: 1
+        },
+        errorMessage: USERS_MESSAGES.PASSWORD_MUST_BE_STRONG
+      }
     }
   })
 )
