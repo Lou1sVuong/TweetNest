@@ -1,4 +1,4 @@
-import express, { Request, Response, NextFunction } from 'express'
+import express from 'express'
 import { defaultErrorHandler } from '~/middlewares/error.middlewares'
 import usersRouters from '~/routes/users.routes'
 import databaseServices from '~/services/database.services'
@@ -14,7 +14,7 @@ app.use('/users', usersRouters)
 app.use(defaultErrorHandler)
 // Health check
 app.use('/health', (req, res) => {
-  res.send(`Server is running at port :${port}`)
+  res.send(`dope shit man, i'm still alive`)
 })
 app.listen(port, () => {
   console.log(`Server is running at port :${port}`)
