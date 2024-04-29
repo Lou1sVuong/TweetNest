@@ -34,5 +34,7 @@ export const USERS_MESSAGES = {
   EMAIL_VERIFIED_SUCCESSFULLY: 'Email verified successfully',
   //   resendVerifyEmailController
   RESEND_VERIFY_EMAIL_SUCCESSFULLY: 'Resend verify email successfully',
-  EMAIL_ALREADY_VERIFIED_BEFORE: 'Email already verified before'
+  EMAIL_ALREADY_VERIFIED_BEFORE: 'Email already verified before',
+  // forgotPassword
+  CHECK_EMAIL_TO_RESET_PASSWORD: 'Check your email to reset password'
 } as const

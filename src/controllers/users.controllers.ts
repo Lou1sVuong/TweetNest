@@ -3,6 +3,7 @@ import usersService from '~/services/users.services'
 import { ParamsDictionary } from 'express-serve-static-core'
 import {
   EmailVerifyReqBody,
+  ForgotPasswordReqBody,
   LoginReqBody,
   LogoutReqBody,
   RegisterReqBody,
@@ -70,5 +71,14 @@ export const resendVerifyEmailController = async (req: Request, res: Response) =
     return res.json({ message: USERS_MESSAGES.EMAIL_ALREADY_VERIFIED_BEFORE })
   }
   const result = await usersService.resendVerifyEmail(user_id)
+  return res.json(result)
+}
+
+export const forgotPasswordController = async (
+  req: Request<ParamsDictionary, any, ForgotPasswordReqBody>,
+  res: Response
+) => {
+  const { _id } = req.user as User
+  const result = await usersService.forgotPassword((_id as ObjectId).toString())
   return res.json(result)
 }
