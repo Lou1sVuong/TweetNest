@@ -98,9 +98,9 @@ class UsersService {
         {
           $set: {
             email_verification_token: '',
-            updated_at: new Date(),
             verification_status: userVerificationStatus.Verified
-          }
+          },
+          $currentDate: { updated_at: true }
         }
       )
     ])
@@ -108,6 +108,22 @@ class UsersService {
     return {
       access_token,
       refresh_token
+    }
+  }
+  async resendVerifyEmail(user_id: string) {
+    const email_verify_token = await this.signEmailVerifyToken(user_id)
+    console.log('Resend email verify token : ', email_verify_token)
+    await databaseServices.users.updateOne(
+      { _id: new ObjectId(user_id) },
+      {
+        $set: {
+          email_verification_token: email_verify_token
+        },
+        $currentDate: { updated_at: true }
+      }
+    )
+    return {
+      message: USERS_MESSAGES.RESEND_VERIFY_EMAIL_SUCCESSFULLY
     }
   }
 }
