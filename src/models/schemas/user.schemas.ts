@@ -11,11 +11,11 @@ interface UserType {
   updated_at?: Date
   email_verification_token?: string
   forgot_password_token?: string
-  verification_status?: userVerificationStatus
+  verify?: userVerificationStatus
 
   //optional
   bio?: string
-  lacation?: string
+  location?: string
   website?: string
   username?: string
   avatar?: string
@@ -32,10 +32,10 @@ export default class User {
   updated_at: Date
   email_verification_token: string
   forgot_password_token: string
-  verification_status: userVerificationStatus
+  verify: userVerificationStatus
 
   bio: string
-  lacation: string
+  location: string
   website: string
   username: string
   avatar: string
@@ -52,9 +52,9 @@ export default class User {
     this.updated_at = user.updated_at || date
     this.email_verification_token = user.email_verification_token || ''
     this.forgot_password_token = user.forgot_password_token || ''
-    this.verification_status = user.verification_status || userVerificationStatus.Unverified
+    this.verify = user.verify || userVerificationStatus.Unverified
     this.bio = user.bio || ''
-    this.lacation = user.lacation || ''
+    this.location = user.location || ''
     this.website = user.website || ''
     this.username = user.username || ''
     this.avatar = user.avatar || ''

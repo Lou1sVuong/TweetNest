@@ -7,6 +7,7 @@ import {
   registerController,
   resendVerifyEmailController,
   resetPasswordController,
+  updateMeController,
   verifyEmailController,
   verifyForgotPasswordController
 } from '~/controllers/users.controllers'
@@ -18,6 +19,7 @@ import {
   refreshTokenValidation,
   registerValidation,
   resetPasswordValidation,
+  verifiedUserValidation,
   verifyForgotPasswordTokenValidation
 } from '~/middlewares/users.middlewares'
 import { wrapRequestHandler } from '~/utils/handlers'
@@ -100,5 +102,14 @@ Headers: { Authorization : Bearer <accessToken> }
 Method: GET
 */
 usersRouters.get('/me', accessTokenValidation, wrapRequestHandler(meController))
+
+/*
+Description: Update my profile
+Path: /me
+Headers: { Authorization : Bearer <accessToken> }
+Method: PATCH
+Body : User Schema
+*/
+usersRouters.patch('/me', accessTokenValidation, verifiedUserValidation, wrapRequestHandler(updateMeController))
 
 export default usersRouters

@@ -44,5 +44,7 @@ export const USERS_MESSAGES = {
   // resetPassword
   RESET_PASSWORD_SUCCESSFULLY: 'Reset password successfully',
   // getMe
-  GET_ME_SUCCESSFULLY: 'Get me successfully'
+  GET_ME_SUCCESSFULLY: 'Get me successfully',
+  // verifyUser
+  USER_NOT_VERIFIED: 'User not verified'
 } as const

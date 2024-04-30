@@ -8,8 +8,10 @@ import usersService from '~/services/users.services'
 import { hashPassword } from '~/utils/crypto'
 import { verifyToken } from '~/utils/jwt'
 import { validate } from '~/utils/validation.utils'
-import { Request } from 'express'
+import { NextFunction, Request, Response } from 'express'
 import { ObjectId } from 'mongodb'
+import { TokenPayload } from '~/models/requests/user.requests'
+import { userVerificationStatus } from '~/constants/enums'
 
 const passwordShema: ParamSchema = {
   isString: {
@@ -367,3 +369,16 @@ export const resetPasswordValidation = validate(
     forgot_password_token: forgotPasswordToken
   })
 )
+
+export const verifiedUserValidation = (req: Request, res: Response, next: NextFunction) => {
+  const { verify } = req.decoded_authorization as TokenPayload
+  if (verify !== userVerificationStatus.Verified) {
+    return next(
+      new ErrorWithStatus({
+        message: USERS_MESSAGES.USER_NOT_VERIFIED,
+        status: HTTP_STATUS.FORBIDDEN
+      })
+    )
+  }
+  next()
+}

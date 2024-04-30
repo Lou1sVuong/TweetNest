@@ -22,7 +22,10 @@ import { result } from 'lodash'
 export const loginController = async (req: Request<ParamsDictionary, any, LoginReqBody>, res: Response) => {
   const user = req.user as User
   const user_id = user._id as ObjectId
-  const result = await usersService.login(user_id.toString())
+  const result = await usersService.login({
+    user_id: user_id.toString(),
+    verify: user.verify
+  })
   return res.json({
     message: USERS_MESSAGES.LOGIN_SUCCESSFULLY,
     result
@@ -70,7 +73,7 @@ export const resendVerifyEmailController = async (req: Request, res: Response) =
   if (!user) {
     return res.status(HTTP_STATUS.NOT_FOUND).json({ message: USERS_MESSAGES.USER_NOT_FOUND })
   }
-  if (user.verification_status === userVerificationStatus.Verified) {
+  if (user.verify === userVerificationStatus.Verified) {
     return res.json({ message: USERS_MESSAGES.EMAIL_ALREADY_VERIFIED_BEFORE })
   }
   const result = await usersService.resendVerifyEmail(user_id)
@@ -81,8 +84,11 @@ export const forgotPasswordController = async (
   req: Request<ParamsDictionary, any, ForgotPasswordReqBody>,
   res: Response
 ) => {
-  const { _id } = req.user as User
-  const result = await usersService.forgotPassword((_id as ObjectId).toString())
+  const { _id, verify } = req.user as User
+  const result = await usersService.forgotPassword({
+    user_id: (_id as ObjectId).toString(),
+    verify
+  })
   return res.json(result)
 }
 
@@ -114,4 +120,8 @@ export const meController = async (req: Request, res: Response, next: NextFuncti
     message: USERS_MESSAGES.GET_ME_SUCCESSFULLY,
     result: user
   })
+}
+
+export const updateMeController = async (req: Request, res: Response, next: NextFunction) => {
+  return res.json({})
 }
