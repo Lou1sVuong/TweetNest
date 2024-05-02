@@ -4,6 +4,7 @@ import { ParamsDictionary } from 'express-serve-static-core'
 import {
   EmailVerifyReqBody,
   ForgotPasswordReqBody,
+  GetProfileReqParams,
   LoginReqBody,
   LogoutReqBody,
   RegisterReqBody,
@@ -133,6 +134,15 @@ export const updateMeController = async (
   const user = usersService.updateMe(user_id, body)
   return res.json({
     message: USERS_MESSAGES.UPDATE_ME_SUCCESSFULLY,
+    result: user
+  })
+}
+
+export const getProfileController = async (req: Request<ParamsDictionary, any, GetProfileReqParams>, res: Response) => {
+  const { id } = req.params
+  const user = await usersService.getProfile(id)
+  return res.json({
+    message: USERS_MESSAGES.GET_PROFILE_SUCCESSFULLY,
     result: user
   })
 }

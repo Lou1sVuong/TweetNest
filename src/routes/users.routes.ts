@@ -1,6 +1,7 @@
 import { Router } from 'express'
 import {
   forgotPasswordController,
+  getProfileController,
   loginController,
   logoutController,
   meController,
@@ -121,5 +122,12 @@ usersRouters.patch(
   filterMiddleware<updateMeReqBody>(['name', 'date_of_birth', 'bio', 'location', 'username', 'avatar', 'cover_photo']),
   wrapRequestHandler(updateMeController)
 )
+
+/*
+Description: Get User Profile by id
+Path: /:id
+Method: GET
+*/
+usersRouters.get('/:id', wrapRequestHandler(getProfileController))
 
 export default usersRouters

@@ -63,5 +63,7 @@ export const USERS_MESSAGES = {
   // verifyUser
   USER_NOT_VERIFIED: 'User not verified',
   //   updateMe
-  UPDATE_ME_SUCCESSFULLY: 'Update profile successfully'
+  UPDATE_ME_SUCCESSFULLY: 'Update profile successfully',
+  //   getProfile
+  GET_PROFILE_SUCCESSFULLY: 'Get profile successfully'
 } as const

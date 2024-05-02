@@ -222,6 +222,32 @@ class UsersService {
     )
     return user
   }
+
+  async getProfile(user_id: string) {
+    let param = {}
+    if (user_id.length === 24) {
+      param = { _id: new ObjectId(user_id) }
+    } else {
+      param = { username: user_id }
+    }
+
+    const user = await databaseServices.users.findOne(param, {
+      projection: {
+        password: 0,
+        email_verification_token: 0,
+        forgot_password_token: 0,
+        verify: 0,
+        created_at: 0,
+        updated_at: 0
+      }
+    })
+
+    if (!user) {
+      throw new Error(USERS_MESSAGES.USER_NOT_FOUND)
+    }
+
+    return user
+  }
 }
 
 const usersService = new UsersService()
