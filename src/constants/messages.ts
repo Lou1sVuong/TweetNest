@@ -32,6 +32,21 @@ export const USERS_MESSAGES = {
   EMAIL_ALREADY_VERIFIED: 'Email already verified',
   USER_NOT_FOUND: 'User not found',
   EMAIL_VERIFIED_SUCCESSFULLY: 'Email verified successfully',
+  // bio
+  BIO_MUST_BE_STRING: 'Bio must be a string',
+  BIO_LENGTH: 'Bio must be between 1 and 200 characters long',
+  // location
+  LOCATION_MUST_BE_STRING: 'Location must be a string',
+  LOCATION_LENGTH: 'Location must be between 1 and 200 characters long',
+  // website
+  WEBSITE_MUST_BE_STRING: 'Website must be a string',
+  WEBSITE_LENGTH: 'Website must be between 1 and 200 characters long',
+  // username
+  USERNAME_MUST_BE_STRING: 'Username must be a string',
+  USERNAME_LENGTH: 'Username must be between 1 and 50 characters long',
+  // IMAGE
+  IMAGE_MUST_BE_STRING: 'Avatar must be a string',
+  IMAGE_LENGTH: 'Avatar must be between 1 and 500 characters long',
   //   resendVerifyEmailController
   RESEND_VERIFY_EMAIL_SUCCESSFULLY: 'Resend verify email successfully',
   EMAIL_ALREADY_VERIFIED_BEFORE: 'Email already verified before',
@@ -46,5 +61,7 @@ export const USERS_MESSAGES = {
   // getMe
   GET_ME_SUCCESSFULLY: 'Get me successfully',
   // verifyUser
-  USER_NOT_VERIFIED: 'User not verified'
+  USER_NOT_VERIFIED: 'User not verified',
+  //   updateMe
+  UPDATE_ME_SUCCESSFULLY: 'Update profile successfully'
 } as const

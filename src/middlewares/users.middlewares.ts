@@ -102,6 +102,46 @@ const forgotPasswordToken: ParamSchema = {
   }
 }
 
+const nameSchema: ParamSchema = {
+  optional: true,
+  notEmpty: {
+    errorMessage: USERS_MESSAGES.NAME_REQUIRED
+  },
+  isString: {
+    errorMessage: USERS_MESSAGES.NAME_MUST_BE_STRING
+  },
+  isLength: {
+    options: {
+      min: 1,
+      max: 100
+    },
+    errorMessage: USERS_MESSAGES.NAME_LENGTH
+  },
+  trim: true
+}
+
+const dateOfBirthSchema: ParamSchema = {
+  isISO8601: {
+    options: {
+      strict: true,
+      strictSeparator: true
+    }
+  }
+}
+const imageShaema: ParamSchema = {
+  optional: true,
+  isString: {
+    errorMessage: USERS_MESSAGES.IMAGE_MUST_BE_STRING
+  },
+  isLength: {
+    options: {
+      min: 1,
+      max: 500
+    },
+    errorMessage: USERS_MESSAGES.IMAGE_LENGTH
+  },
+  trim: true
+}
 export const loginValidation = validate(
   checkSchema(
     {
@@ -158,22 +198,7 @@ export const loginValidation = validate(
 export const registerValidation = validate(
   checkSchema(
     {
-      name: {
-        notEmpty: {
-          errorMessage: USERS_MESSAGES.NAME_REQUIRED
-        },
-        isString: {
-          errorMessage: USERS_MESSAGES.NAME_MUST_BE_STRING
-        },
-        isLength: {
-          options: {
-            min: 1,
-            max: 100
-          }
-        },
-        errorMessage: USERS_MESSAGES.NAME_LENGTH,
-        trim: true
-      },
+      name: nameSchema,
       email: {
         notEmpty: {
           errorMessage: USERS_MESSAGES.EMAIL_REQUIRED
@@ -194,14 +219,7 @@ export const registerValidation = validate(
       },
       password: passwordShema,
       confirm_password: confirmPasswordSchema,
-      date_of_birth: {
-        isISO8601: {
-          options: {
-            strict: true,
-            strictSeparator: true
-          }
-        }
-      }
+      date_of_birth: dateOfBirthSchema
     },
     ['body']
   )
@@ -382,3 +400,77 @@ export const verifiedUserValidation = (req: Request, res: Response, next: NextFu
   }
   next()
 }
+export const updateMeValidation = validate(
+  checkSchema(
+    {
+      name: {
+        ...nameSchema,
+        optional: true,
+        isEmpty: undefined
+      },
+      date_of_birth: {
+        ...dateOfBirthSchema,
+        optional: true
+      },
+      bio: {
+        optional: true,
+        isString: {
+          errorMessage: USERS_MESSAGES.BIO_MUST_BE_STRING
+        },
+        isLength: {
+          options: {
+            min: 1,
+            max: 200
+          },
+          errorMessage: USERS_MESSAGES.BIO_LENGTH
+        },
+        trim: true
+      },
+      location: {
+        optional: true,
+        isString: {
+          errorMessage: USERS_MESSAGES.LOCATION_MUST_BE_STRING
+        },
+        isLength: {
+          options: {
+            min: 1,
+            max: 200
+          },
+          errorMessage: USERS_MESSAGES.LOCATION_LENGTH
+        },
+        trim: true
+      },
+      website: {
+        optional: true,
+        isString: {
+          errorMessage: USERS_MESSAGES.WEBSITE_MUST_BE_STRING
+        },
+        isLength: {
+          options: {
+            min: 1,
+            max: 200
+          },
+          errorMessage: USERS_MESSAGES.WEBSITE_LENGTH
+        },
+        trim: true
+      },
+      username: {
+        optional: true,
+        isString: {
+          errorMessage: USERS_MESSAGES.USERNAME_MUST_BE_STRING
+        },
+        isLength: {
+          options: {
+            min: 1,
+            max: 50
+          },
+          errorMessage: USERS_MESSAGES.USERNAME_LENGTH
+        },
+        trim: true
+      },
+      avatar: imageShaema,
+      cover_photo: imageShaema
+    },
+    ['body']
+  )
+)
