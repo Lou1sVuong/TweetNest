@@ -2,6 +2,7 @@ import { Collection, Db, MongoClient } from 'mongodb'
 import { config } from 'dotenv'
 import User from '~/models/schemas/user.schemas'
 import RefreshToken from '~/models/schemas/refreshToken.schemas'
+import Follower from '~/models/schemas/follower.schemas'
 
 config()
 
@@ -35,6 +36,9 @@ class DatabaseServices {
   }
   get refreshTokens(): Collection<RefreshToken> {
     return this.db.collection(process.env.DB_REFRESH_TOKENS_COLLECTION as string)
+  }
+  get followers(): Collection<Follower> {
+    return this.db.collection(process.env.DB_FOLLOWERS_COLLECTION as string)
   }
 }
 // tạo object từ class DatabaseServices
