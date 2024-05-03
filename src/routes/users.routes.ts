@@ -1,5 +1,6 @@
 import { Router } from 'express'
 import {
+  changePasswordController,
   followController,
   forgotPasswordController,
   getProfileController,
@@ -17,6 +18,7 @@ import {
 import { filterMiddleware } from '~/middlewares/common.middlewares'
 import {
   accessTokenValidation,
+  changePasswordValidation,
   emailVerifyTokenValidation,
   followValidation,
   forgotPasswordValidation,
@@ -162,6 +164,21 @@ usersRouters.delete(
   verifiedUserValidation,
   unfollowValidation,
   wrapRequestHandler(unfollowController)
+)
+
+/*
+Description: change password
+Path: /change-password
+Headers: { Authorization : Bearer <accessToken> }
+Method: PUT
+Body : { old_password : string , new_password : string , confirm_password : string }
+*/
+usersRouters.put(
+  '/change-password',
+  accessTokenValidation,
+  verifiedUserValidation,
+  changePasswordValidation,
+  wrapRequestHandler(changePasswordController)
 )
 
 export default usersRouters
