@@ -9,6 +9,7 @@ import {
   registerController,
   resendVerifyEmailController,
   resetPasswordController,
+  unfollowController,
   updateMeController,
   verifyEmailController,
   verifyForgotPasswordController
@@ -23,6 +24,7 @@ import {
   refreshTokenValidation,
   registerValidation,
   resetPasswordValidation,
+  unfollowValidation,
   updateMeValidation,
   verifiedUserValidation,
   verifyForgotPasswordTokenValidation
@@ -130,7 +132,7 @@ Description: Get User Profile by id or username
 Path: /:id
 Method: GET
 */
-usersRouters.get('/:id', wrapRequestHandler(getProfileController))
+usersRouters.get('/:user_id', wrapRequestHandler(getProfileController))
 
 /*
 Description: Follow Someone
@@ -145,6 +147,21 @@ usersRouters.post(
   verifiedUserValidation,
   followValidation,
   wrapRequestHandler(followController)
+)
+
+/*
+Description: Unfollow Someone
+Path: /follow
+Method: POST
+Headers: { Authorization : Bearer <accessToken> }
+Body: { followed_user_id : string }
+*/
+usersRouters.delete(
+  '/follow/:user_id',
+  accessTokenValidation,
+  verifiedUserValidation,
+  unfollowValidation,
+  wrapRequestHandler(unfollowController)
 )
 
 export default usersRouters

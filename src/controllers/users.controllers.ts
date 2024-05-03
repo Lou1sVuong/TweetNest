@@ -11,6 +11,7 @@ import {
   RegisterReqBody,
   ResetPasswordReqBody,
   TokenPayload,
+  UnfollowReqParams,
   VerifyForgotPasswordReqBody,
   updateMeReqBody
 } from '~/models/requests/user.requests'
@@ -139,8 +140,8 @@ export const updateMeController = async (
 }
 
 export const getProfileController = async (req: Request<ParamsDictionary, any, GetProfileReqParams>, res: Response) => {
-  const { id } = req.params
-  const user = await usersService.getProfile(id)
+  const { user_id } = req.params
+  const user = await usersService.getProfile(user_id)
   return res.json({
     message: USERS_MESSAGES.GET_PROFILE_SUCCESSFULLY,
     result: user
@@ -155,5 +156,16 @@ export const followController = async (
   const { user_id } = req.decoded_authorization as TokenPayload
   const { followed_user_id } = req.body
   const result = await usersService.follow(user_id, followed_user_id)
+  return res.json(result)
+}
+
+export const unfollowController = async (
+  req: Request<ParamsDictionary, any, UnfollowReqParams>,
+  res: Response,
+  next: NextFunction
+) => {
+  const { user_id } = req.decoded_authorization as TokenPayload
+  const { user_id: followed_user_id } = req.params
+  const result = await usersService.unfollow(user_id, followed_user_id)
   return res.json(result)
 }
