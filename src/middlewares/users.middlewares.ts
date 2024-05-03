@@ -12,6 +12,7 @@ import { NextFunction, Request, Response } from 'express'
 import { ObjectId } from 'mongodb'
 import { TokenPayload } from '~/models/requests/user.requests'
 import { userVerificationStatus } from '~/constants/enums'
+import { REGEX_USERNAME } from '~/constants/regex'
 
 const passwordShema: ParamSchema = {
   isString: {
@@ -483,14 +484,20 @@ export const updateMeValidation = validate(
         isString: {
           errorMessage: USERS_MESSAGES.USERNAME_MUST_BE_STRING
         },
-        isLength: {
-          options: {
-            min: 1,
-            max: 50
-          },
-          errorMessage: USERS_MESSAGES.USERNAME_LENGTH
-        },
-        trim: true
+
+        trim: true,
+        custom: {
+          options: async (value: string, { req }) => {
+            if (!REGEX_USERNAME.test(value)) {
+              throw new Error(USERS_MESSAGES.USERNAME_INVALID)
+            }
+            const user = await databaseServices.users.findOne({ username: value })
+            // nếu đã tổn tại username này trong db thì trả về lỗi username đã tồn tại
+            if (user) {
+              throw new Error(USERS_MESSAGES.USERNAME_EXIST)
+            }
+          }
+        }
       },
       avatar: imageShaema,
       cover_photo: imageShaema
