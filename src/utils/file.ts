@@ -1,24 +1,21 @@
-import path from 'path'
 import fs from 'fs'
 import { Request, Response } from 'express'
+import { File } from 'formidable'
+import { UPLOAD_TEMP_DIR } from '~/constants/dir'
 
 export const initFolder = () => {
-  const uploadFolder = path.resolve('uploads')
-  if (!fs.existsSync(uploadFolder)) {
-    fs.mkdirSync(uploadFolder),
-      {
-        recursive: true
-      }
+  if (!fs.existsSync(UPLOAD_TEMP_DIR)) {
+    fs.mkdirSync(UPLOAD_TEMP_DIR, { recursive: true })
   }
 }
 
 export const handleUploadSingleImage = async (req: Request) => {
   const formidable = (await import('formidable')).default
   const form = formidable({
-    uploadDir: path.resolve('uploads'),
+    uploadDir: UPLOAD_TEMP_DIR,
     maxFiles: 1,
     keepExtensions: true,
-    maxFileSize: 300 * 1024, // 300kb
+    maxFileSize: 3000 * 1024, // 300kb
     filter: function ({ name, originalFilename, mimetype }) {
       const valid = name === 'image' && Boolean(mimetype?.includes('image/'))
       if (!valid) {
@@ -27,10 +24,9 @@ export const handleUploadSingleImage = async (req: Request) => {
       return valid
     }
   })
-  return new Promise((resolve, reject) => {
+  return new Promise<File>((resolve, reject) => {
     form.parse(req, (err, fields, files) => {
       console.log('fields', fields)
-      console.log('files', files)
       if (err) {
         return reject(err)
       }
@@ -38,7 +34,13 @@ export const handleUploadSingleImage = async (req: Request) => {
       if (!Boolean(files.image)) {
         return reject(new Error('File is empty'))
       }
-      resolve(files)
+      resolve((files.image as File[])[0])
     })
   })
+}
+
+export const getNameFileFromFullName = (fullNameFile: string) => {
+  const nameArr = fullNameFile.split('.')
+  nameArr.pop()
+  return nameArr.join('')
 }
