@@ -16,10 +16,12 @@
   "license": "ISC",
   "dependencies": {
     "@types/express": "^4.17.21",
+    "@types/formidable": "^3.4.5",
     "@types/jsonwebtoken": "^9.0.6",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "express-validator": "^7.0.1",
+    "formidable": "^3.5.1",
     "jsonwebtoken": "^9.0.2",
     "lodash": "^4.17.21",
     "mongodb": "^6.5.0"

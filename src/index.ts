@@ -1,15 +1,22 @@
 import express from 'express'
 import { defaultErrorHandler } from '~/middlewares/error.middlewares'
+import mediasRouters from '~/routes/medias.routes'
 import usersRouters from '~/routes/users.routes'
 import databaseServices from '~/services/database.services'
-const app = express()
-const port = 8000
+import { initFolder } from '~/utils/file'
 // Connect to database
 databaseServices.connect()
+const app = express()
+const port = 8000
+
+// init folder uploads
+initFolder()
 // Middlewares for parsing body
 app.use(express.json())
 // Routes for users
 app.use('/users', usersRouters)
+// Routes for medias
+app.use('/medias', mediasRouters)
 // Error handler
 app.use(defaultErrorHandler)
 // Health check
