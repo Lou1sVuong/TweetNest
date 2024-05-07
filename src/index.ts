@@ -1,6 +1,6 @@
 import { config } from 'dotenv'
 import express from 'express'
-import { UPLOAD_DIR } from '~/constants/dir'
+import { UPLOAD_IMAGE_DIR } from '~/constants/dir'
 import { defaultErrorHandler } from '~/middlewares/error.middlewares'
 import mediasRouters from '~/routes/medias.routes'
 import staticRouters from '~/routes/static.routes'

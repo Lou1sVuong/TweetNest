@@ -80,5 +80,7 @@ export const USERS_MESSAGES = {
   CHANGE_PASSWORD_SUCCESSFULLY: 'Change password successfully',
   //   Medias
   UPLOAD_IMAGE_SUCCESSFULLY: 'Upload image successfully',
-  IMAGE_NOT_FOUND: 'Image not found'
+  IMAGE_NOT_FOUND: 'Image not found',
+  UPLOAD_VIDEO_SUCCESSFULLY: 'Upload video successfully',
+  VIDEO_NOT_FOUND: 'Video not found'
 } as const
