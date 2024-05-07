@@ -77,5 +77,7 @@ export const USERS_MESSAGES = {
   UNFOLLOW_SUCCESSFULLY: 'Unfollow successfully',
   // changePassword
   OLD_PASSWORD_INCORRECT: 'Old password is incorrect',
-  CHANGE_PASSWORD_SUCCESSFULLY: 'Change password successfully'
+  CHANGE_PASSWORD_SUCCESSFULLY: 'Change password successfully',
+  //   Medias
+  UPLOAD_IMAGE_SUCCESSFULLY: 'Upload image successfully'
 } as const

@@ -1,5 +1,6 @@
 import { config } from 'dotenv'
 import express from 'express'
+import { UPLOAD_DIR } from '~/constants/dir'
 import { defaultErrorHandler } from '~/middlewares/error.middlewares'
 import mediasRouters from '~/routes/medias.routes'
 import usersRouters from '~/routes/users.routes'
@@ -19,6 +20,7 @@ app.use(express.json())
 app.use('/users', usersRouters)
 // Routes for medias
 app.use('/medias', mediasRouters)
+app.use('/static', express.static(UPLOAD_DIR))
 // Error handler
 app.use(defaultErrorHandler)
 // Health check
