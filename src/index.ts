@@ -3,6 +3,7 @@ import express from 'express'
 import { UPLOAD_DIR } from '~/constants/dir'
 import { defaultErrorHandler } from '~/middlewares/error.middlewares'
 import mediasRouters from '~/routes/medias.routes'
+import staticRouters from '~/routes/static.routes'
 import usersRouters from '~/routes/users.routes'
 import databaseServices from '~/services/database.services'
 import { initFolder } from '~/utils/file'
@@ -20,7 +21,8 @@ app.use(express.json())
 app.use('/users', usersRouters)
 // Routes for medias
 app.use('/medias', mediasRouters)
-app.use('/static', express.static(UPLOAD_DIR))
+// Routes for static
+app.use('/static', staticRouters)
 // Error handler
 app.use(defaultErrorHandler)
 // Health check
