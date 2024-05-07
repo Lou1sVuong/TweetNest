@@ -1,14 +1,16 @@
+import { config } from 'dotenv'
 import express from 'express'
 import { defaultErrorHandler } from '~/middlewares/error.middlewares'
 import mediasRouters from '~/routes/medias.routes'
 import usersRouters from '~/routes/users.routes'
 import databaseServices from '~/services/database.services'
 import { initFolder } from '~/utils/file'
+config()
+
 // Connect to database
 databaseServices.connect()
 const app = express()
-const port = 8000
-
+const port = process.env.PORT || 4000
 // init folder uploads
 initFolder()
 // Middlewares for parsing body
