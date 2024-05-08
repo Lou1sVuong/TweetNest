@@ -20,6 +20,7 @@
     "@types/jsonwebtoken": "^9.0.6",
     "@types/minimist": "^1.2.5",
     "@types/uuid": "^9.0.8",
+    "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "express-validator": "^7.0.1",
@@ -34,6 +35,7 @@
     "zx": "^8.0.2"
   },
   "devDependencies": {
+    "@types/cors": "^2.8.17",
     "@types/lodash": "^4.17.0",
     "@types/node": "^20.12.7",
     "@typescript-eslint/eslint-plugin": "^7.7.0",

@@ -7,11 +7,13 @@ import staticRouters from '~/routes/static.routes'
 import usersRouters from '~/routes/users.routes'
 import databaseServices from '~/services/database.services'
 import { initFolder } from '~/utils/file'
+import cors from 'cors'
 config()
 
 // Connect to database
 databaseServices.connect()
 const app = express()
+app.use(cors())
 const port = process.env.PORT || 4000
 // init folder uploads
 initFolder()

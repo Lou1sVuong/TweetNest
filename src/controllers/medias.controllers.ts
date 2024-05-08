@@ -45,3 +45,22 @@ export const serveVideoController = (req: Request, res: Response, next: NextFunc
     }
   })
 }
+
+export const serveM3u8Controller = (req: Request, res: Response, next: NextFunction) => {
+  const { id } = req.params
+  // const readId = id.replace('.m3u8', '')
+  return res.sendFile(path.resolve(UPLOAD_VIDEO_DIR, id, 'master.m3u8'), (err) => {
+    if (err) {
+      return res.status((err as any).status).send(USERS_MESSAGES.IMAGE_NOT_FOUND)
+    }
+  })
+}
+
+export const serveSegmentController = (req: Request, res: Response, next: NextFunction) => {
+  const { id, v, segment } = req.params
+  return res.sendFile(path.resolve(UPLOAD_VIDEO_DIR, id, v, segment), (err) => {
+    if (err) {
+      return res.status((err as any).status).send(USERS_MESSAGES.IMAGE_NOT_FOUND)
+    }
+  })
+}
