@@ -7,6 +7,7 @@ import {
   loginController,
   logoutController,
   meController,
+  refreshTokenController,
   registerController,
   resendVerifyEmailController,
   resetPasswordController,
@@ -54,9 +55,17 @@ Description: This route is used to logout
 Path: /logout
 Method: POST
 Headers: { Authorization : Bearer <accessToken> }
-Body: { refreshToken : string}
+Body: { refresh_token : string}
 */
 usersRouters.post('/logout', accessTokenValidation, refreshTokenValidation, wrapRequestHandler(logoutController))
+
+/*
+Description: Refresh token
+Path: /refresh-token
+Method: POST
+Body: { refresh_token : string}
+*/
+usersRouters.post('/refresh-token', refreshTokenValidation, wrapRequestHandler(refreshTokenController))
 
 /*
 Description: Verify email when user click on the link in the email

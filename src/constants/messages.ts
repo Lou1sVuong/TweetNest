@@ -23,6 +23,7 @@ export const USERS_MESSAGES = {
   REFRESH_TOKEN_REQUIRED: 'Refresh token is required',
   REFRESH_TOKEN_MUST_BE_STRING: 'Refresh token must be a string',
   REFRESH_TOKEN_IS_INVALID: 'Refresh token is invalid',
+  REFRESH_TOKEN_SUCCESSFULLY: 'Refresh token successfully',
   //logout
   USED_REFRESH_TOKEN_OR_NOT_EXIST: 'Used refresh token or not exist',
   LOGOUT_SUCCESSFULLY: 'Logout successfully',

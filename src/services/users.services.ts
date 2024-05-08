@@ -96,7 +96,22 @@ class UsersService {
     console.log('email_verification_token : ', email_verify_token)
     return { access_token, refresh_token }
   }
-
+  async refreshToken({
+    user_id,
+    verify,
+    refresh_token
+  }: {
+    user_id: string
+    verify: userVerificationStatus
+    refresh_token: string
+  }) {
+    const [new_access_token, new_refresh_token] = await Promise.all([
+      this.signAccessToken({ user_id, verify }),
+      this.signRefreshToken({ user_id, verify }),
+      databaseServices.refreshTokens.deleteOne({ token: this.refreshToken })
+    ])
+    return { access_token: new_access_token, refresh_token: new_refresh_token }
+  }
   async checkEmailExist(email: string) {
     const result = await databaseServices.users.findOne({ email })
     return Boolean(result)
