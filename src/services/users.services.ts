@@ -8,7 +8,7 @@ import RefreshToken from '~/models/schemas/refreshToken.schemas'
 import User from '~/models/schemas/user.schemas'
 import databaseServices from '~/services/database.services'
 import { hashPassword } from '~/utils/crypto'
-import { signToken } from '~/utils/jwt'
+import { signToken, verifyToken } from '~/utils/jwt'
 config()
 
 class UsersService {
@@ -26,7 +26,26 @@ class UsersService {
     })
   }
 
-  private signRefreshToken({ user_id, verify }: { user_id: string; verify: userVerificationStatus }) {
+  private signRefreshToken({
+    user_id,
+    verify,
+    exp
+  }: {
+    user_id: string
+    verify: userVerificationStatus
+    exp?: number
+  }) {
+    if (exp) {
+      return signToken({
+        payload: {
+          user_id,
+          token_type: tokenType.RefreshToken,
+          verify,
+          exp
+        },
+        privateKey: process.env.JWT_SECRET_REFRESH_TOKEN as string
+      })
+    }
     return signToken({
       payload: {
         user_id,
@@ -71,6 +90,14 @@ class UsersService {
   private signAccessAndRefreshToken({ user_id, verify }: { user_id: string; verify: userVerificationStatus }) {
     return Promise.all([this.signAccessToken({ user_id, verify }), this.signRefreshToken({ user_id, verify })])
   }
+
+  private decodeRefreshToken(refresh_token: string) {
+    return verifyToken({
+      token: refresh_token,
+      secretOrPublickey: process.env.JWT_SECRET_REFRESH_TOKEN as string
+    })
+  }
+
   async register(payload: RegisterReqBody) {
     const user_id = new ObjectId()
     const email_verify_token = await this.signEmailVerifyToken({
@@ -90,8 +117,9 @@ class UsersService {
       user_id: user_id.toString(),
       verify: userVerificationStatus.Unverified
     })
+    const { iat, exp } = await this.decodeRefreshToken(refresh_token)
     await databaseServices.refreshTokens.insertOne(
-      new RefreshToken({ user_id: new ObjectId(user_id), token: refresh_token })
+      new RefreshToken({ user_id: new ObjectId(user_id), token: refresh_token, iat, exp })
     )
     console.log('email_verification_token : ', email_verify_token)
     return { access_token, refresh_token }
@@ -99,17 +127,29 @@ class UsersService {
   async refreshToken({
     user_id,
     verify,
-    refresh_token
+    refresh_token,
+    exp
   }: {
     user_id: string
     verify: userVerificationStatus
     refresh_token: string
+    exp: number
   }) {
     const [new_access_token, new_refresh_token] = await Promise.all([
       this.signAccessToken({ user_id, verify }),
-      this.signRefreshToken({ user_id, verify }),
+      this.signRefreshToken({ user_id, verify, exp }),
       databaseServices.refreshTokens.deleteOne({ token: this.refreshToken })
     ])
+    const decode_refresh_token = await this.decodeRefreshToken(new_refresh_token)
+
+    await databaseServices.refreshTokens.insertOne(
+      new RefreshToken({
+        user_id: new ObjectId(user_id),
+        token: new_refresh_token,
+        iat: decode_refresh_token.iat,
+        exp: decode_refresh_token.exp
+      })
+    )
     return { access_token: new_access_token, refresh_token: new_refresh_token }
   }
   async checkEmailExist(email: string) {
@@ -121,8 +161,9 @@ class UsersService {
       user_id,
       verify
     })
+    const { iat, exp } = await this.decodeRefreshToken(refresh_token)
     await databaseServices.refreshTokens.insertOne(
-      new RefreshToken({ user_id: new ObjectId(user_id), token: refresh_token })
+      new RefreshToken({ user_id: new ObjectId(user_id), token: refresh_token, iat, exp })
     )
     return { access_token, refresh_token }
   }
@@ -147,8 +188,9 @@ class UsersService {
       )
     ])
     const [access_token, refresh_token] = token
+    const { iat, exp } = await this.decodeRefreshToken(refresh_token)
     await databaseServices.refreshTokens.insertOne(
-      new RefreshToken({ user_id: new ObjectId(user_id), token: refresh_token })
+      new RefreshToken({ user_id: new ObjectId(user_id), token: refresh_token, iat, exp })
     )
     return {
       access_token,

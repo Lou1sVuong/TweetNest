@@ -32,6 +32,11 @@ class DatabaseServices {
     }
   }
 
+  indexUsers() {
+    this.users.createIndex({ email: 1, password: 1 })
+    this.users.createIndex({ email: 1 }, { unique: true })
+  }
+
   get users(): Collection<User> {
     return this.db.collection(process.env.DB_USERS_COLLECTION as string)
   }
