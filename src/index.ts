@@ -8,6 +8,7 @@ import usersRouters from '~/routes/users.routes'
 import databaseServices from '~/services/database.services'
 import { initFolder } from '~/utils/file'
 import cors from 'cors'
+import tweetsRouter from '~/routes/tweets.routes'
 config()
 
 // Connect to database
@@ -28,6 +29,8 @@ app.use(express.json())
 app.use('/users', usersRouters)
 // Routes for medias
 app.use('/medias', mediasRouters)
+// Routes for tweets
+app.use('/tweets', tweetsRouter)
 // Routes for static
 app.use('/static', staticRouters)
 // Error handler
