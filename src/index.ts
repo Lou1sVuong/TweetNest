@@ -13,6 +13,9 @@ config()
 // Connect to database
 databaseServices.connect().then(() => {
   databaseServices.indexUsers()
+  databaseServices.indexRefreshTokens()
+  databaseServices.indexFollowers()
+  databaseServices.indexVideoStatus()
 })
 const app = express()
 app.use(cors())
