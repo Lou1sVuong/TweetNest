@@ -10,6 +10,7 @@ import { initFolder } from '~/utils/file'
 import cors from 'cors'
 import tweetsRouter from '~/routes/tweets.routes'
 import bookmarksRouters from '~/routes/bookmarks.routes'
+import likesRouters from '~/routes/likes.routes'
 config()
 
 // Connect to database
@@ -34,6 +35,8 @@ app.use('/medias', mediasRouters)
 app.use('/tweets', tweetsRouter)
 // Routes for bookmarks
 app.use('/bookmarks', bookmarksRouters)
+// Routes for likes
+app.use('/likes', likesRouters)
 // Routes for static
 app.use('/static', staticRouters)
 // Error handler

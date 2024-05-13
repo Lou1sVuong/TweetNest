@@ -7,6 +7,7 @@ import VideoStatus from '~/models/schemas/videoStatus.schemas'
 import Tweet from '~/models/schemas/tweet.shemas'
 import HashTag from '~/models/schemas/hashtag.schemas'
 import Bookmark from '~/models/schemas/bookmark.schemas'
+import Like from '~/models/schemas/like.schemas'
 
 config()
 
@@ -85,6 +86,9 @@ class DatabaseServices {
   }
   get bookmarks(): Collection<Bookmark> {
     return this.db.collection(process.env.DB_BOOKMARKS_COLLECTION as string)
+  }
+  get likes(): Collection<Like> {
+    return this.db.collection(process.env.DB_LIKES_COLLECTION as string)
   }
 }
 // tạo object từ class DatabaseServices
