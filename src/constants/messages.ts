@@ -99,5 +99,11 @@ export const TWEETS_MESSAGES = {
   HASHTAGS_MUST_BE_AN_ARRAY_OF_STRING: 'Hashtags must be an array of string',
   MENTIONS_MUST_BE_AN_ARRAY: 'Mentions must be an array',
   MENTIONS_MUST_BE_AN_ARRAY_USER_ID: 'Mentions must be an array of user id',
-  MEDIA_MUST_BE_AN_ARRAY_OF_MEDIA_OBJECT: 'Media must be an array of media object'
+  MEDIA_MUST_BE_AN_ARRAY_OF_MEDIA_OBJECT: 'Media must be an array of media object',
+  CREATE_TWEET_SUCCESSFULLY: 'Create tweet successfully'
+} as const
+
+export const BOOKMARKS_MESSGAGES = {
+  BOOKMARK_TWEET_SUCCESSFULLY: 'Bookmark tweet successfully',
+  UNBOOKMARK_TWEET_SUCCESSFULLY: 'Unbookmark tweet successfully'
 } as const

@@ -5,6 +5,8 @@ import RefreshToken from '~/models/schemas/refreshToken.schemas'
 import Follower from '~/models/schemas/follower.schemas'
 import VideoStatus from '~/models/schemas/videoStatus.schemas'
 import Tweet from '~/models/schemas/tweet.shemas'
+import HashTag from '~/models/schemas/hashtag.schemas'
+import Bookmark from '~/models/schemas/bookmark.schemas'
 
 config()
 
@@ -77,6 +79,12 @@ class DatabaseServices {
   }
   get tweets(): Collection<Tweet> {
     return this.db.collection(process.env.DB_TWEETS_COLLECTION as string)
+  }
+  get hashtags(): Collection<HashTag> {
+    return this.db.collection(process.env.DB_HASHTAGS_COLLECTION as string)
+  }
+  get bookmarks(): Collection<Bookmark> {
+    return this.db.collection(process.env.DB_BOOKMARKS_COLLECTION as string)
   }
 }
 // tạo object từ class DatabaseServices
