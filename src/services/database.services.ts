@@ -4,6 +4,7 @@ import User from '~/models/schemas/user.schemas'
 import RefreshToken from '~/models/schemas/refreshToken.schemas'
 import Follower from '~/models/schemas/follower.schemas'
 import VideoStatus from '~/models/schemas/videoStatus.schemas'
+import Tweet from '~/models/schemas/tweet.shemas'
 
 config()
 
@@ -73,6 +74,9 @@ class DatabaseServices {
   }
   get videoStatus(): Collection<VideoStatus> {
     return this.db.collection(process.env.DB_VIDEO_STATUS_COLLECTION as string)
+  }
+  get tweets(): Collection<Tweet> {
+    return this.db.collection(process.env.DB_TWEETS_COLLECTION as string)
   }
 }
 // tạo object từ class DatabaseServices
