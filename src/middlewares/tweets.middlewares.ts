@@ -4,7 +4,7 @@ import { has, isEmpty } from 'lodash'
 import { ObjectId } from 'mongodb'
 import { Mediatype, TweetAudience, TweetType, userVerificationStatus } from '~/constants/enums'
 import HTTP_STATUS from '~/constants/httpStatus'
-import { TWEETS_MESSAGES, USERS_MESSAGES } from '~/constants/messages'
+import { TWEETS_MESSAGES, TWEET_CHIRLDREN_MESSAGES, USERS_MESSAGES } from '~/constants/messages'
 import { ErrorWithStatus } from '~/models/errors'
 import Tweet from '~/models/schemas/tweet.shemas'
 import databaseServices from '~/services/database.services'
@@ -299,3 +299,41 @@ export const audienceValidation = wrapRequestHandler(async (req: Request, res: R
   }
   next()
 })
+
+export const getTweetChildrenValidation = validate(
+  checkSchema(
+    {
+      tweet_type: {
+        isIn: {
+          options: [tweetTypes],
+          errorMessage: TWEETS_MESSAGES.INVALID_TYPE
+        }
+      },
+      limit: {
+        isNumeric: true,
+        custom: {
+          options: (value, { req }) => {
+            const num = Number(value)
+            if (num > 100 || num < 1) {
+              throw new Error(TWEET_CHIRLDREN_MESSAGES.LIMIT_MUST_BE_BETWEEN_1_AND_100)
+            }
+            return true
+          }
+        }
+      },
+      page: {
+        isNumeric: true,
+        custom: {
+          options: (value, { req }) => {
+            const num = Number(value)
+            if (num < 1) {
+              throw new Error(TWEET_CHIRLDREN_MESSAGES.LIMIT_MUST_BE_LESS_THAN_1)
+            }
+            return true
+          }
+        }
+      }
+    },
+    ['query']
+  )
+)

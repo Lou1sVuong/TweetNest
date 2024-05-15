@@ -117,3 +117,8 @@ export const LIKE_MESSGAGES = {
   LIKE_TWEET_SUCCESSFULLY: 'Like tweet successfully',
   UNLIKE_TWEET_SUCCESSFULLY: 'Unlike tweet successfully'
 }
+
+export const TWEET_CHIRLDREN_MESSAGES = {
+  LIMIT_MUST_BE_BETWEEN_1_AND_100: 'Limit must be between 1 and 100',
+  LIMIT_MUST_BE_LESS_THAN_1: 'Limit must be less than 1'
+} as const
