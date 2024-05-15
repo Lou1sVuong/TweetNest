@@ -1,6 +1,5 @@
 import { config } from 'dotenv'
 import express from 'express'
-import { UPLOAD_IMAGE_DIR } from '~/constants/dir'
 import { defaultErrorHandler } from '~/middlewares/error.middlewares'
 import mediasRouters from '~/routes/medias.routes'
 import staticRouters from '~/routes/static.routes'
@@ -11,8 +10,11 @@ import cors from 'cors'
 import tweetsRouter from '~/routes/tweets.routes'
 import bookmarksRouters from '~/routes/bookmarks.routes'
 import likesRouters from '~/routes/likes.routes'
-config()
 
+// create fake users data ( uncomment this line bellow to create fake data)
+// import '~/utils/fakeData'
+
+config()
 // Connect to database
 databaseServices.connect().then(() => {
   databaseServices.indexUsers()

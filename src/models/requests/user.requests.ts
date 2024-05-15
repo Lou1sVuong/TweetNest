@@ -9,7 +9,7 @@ export interface RegisterReqBody {
   name: string
   email: string
   password: string
-  confirmPassword: string
+  confirm_password: string
   date_of_birth: string
 }
 export interface LogoutReqBody {
