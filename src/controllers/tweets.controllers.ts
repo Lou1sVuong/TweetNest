@@ -20,8 +20,17 @@ export const createTweetController = async (
 }
 
 export const getTweetController = async (req: Request, res: Response) => {
+  const tweet_id = req.params.tweet_id
+  const user_id = req.decoded_authorization?.user_id
+  const result = await tweetsService.increaseView(tweet_id, user_id)
+  const tweet = {
+    ...req.tweet,
+    guest_view: result.guest_view,
+    user_view: result.user_view
+  }
+  console.log(result)
   return res.json({
     message: TWEETS_MESSAGES.GET_TWEET_SUCCESSFULLY,
-    result: req.tweet
+    result: tweet
   })
 }

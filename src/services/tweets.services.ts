@@ -41,6 +41,27 @@ class TweetsService {
     const tweet = await databaseServices.tweets.findOne({ _id: result.insertedId })
     return tweet
   }
+  async increaseView(tweet_id: string, user_id?: string) {
+    const inc = user_id ? { user_view: 1 } : { guest_view: 1 }
+    const result = await databaseServices.tweets.findOneAndUpdate(
+      { _id: new ObjectId(tweet_id) },
+      {
+        $inc: inc,
+        $currentDate: { updated_at: true }
+      },
+      {
+        returnDocument: 'after',
+        projection: {
+          user_view: 1,
+          guest_view: 1
+        }
+      }
+    )
+    return result as WithId<{
+      user_view: number
+      guest_view: number
+    }>
+  }
 }
 
 const tweetsService = new TweetsService()
