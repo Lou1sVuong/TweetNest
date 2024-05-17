@@ -308,7 +308,15 @@ export const getTweetChildrenValidation = validate(
           options: [tweetTypes],
           errorMessage: TWEETS_MESSAGES.INVALID_TYPE
         }
-      },
+      }
+    },
+    ['query']
+  )
+)
+
+export const panigationValidation = validate(
+  checkSchema(
+    {
       limit: {
         isNumeric: true,
         custom: {

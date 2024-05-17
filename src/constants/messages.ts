@@ -105,7 +105,8 @@ export const TWEETS_MESSAGES = {
   TWEET_NOT_FOUND: 'Tweet not found',
   GET_TWEET_SUCCESSFULLY: 'Get tweet successfully',
   GET_TWEET_CHILDREN_SUCCESSFULLY: 'Get tweet children successfully',
-  TWEET_IS_NOT_PUBLIC: 'Tweet is not public'
+  TWEET_IS_NOT_PUBLIC: 'Tweet is not public',
+  GET_NEW_FEEDS_SUCCESSFULLY: 'Get new feeds successfully'
 } as const
 
 export const BOOKMARKS_MESSGAGES = {
