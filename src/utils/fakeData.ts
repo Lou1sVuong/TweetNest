@@ -54,6 +54,7 @@ const insertMultipleUsers = async (users: RegisterReqBody[]) => {
       await databaseServices.users.insertOne(
         new User({
           ...user,
+          _id: user_id,
           username: `user${user_id.toString()}`,
           password: hashPassword(user.password),
           date_of_birth: new Date(user.date_of_birth),
