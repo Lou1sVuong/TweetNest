@@ -10,6 +10,7 @@ import cors from 'cors'
 import tweetsRouter from '~/routes/tweets.routes'
 import bookmarksRouters from '~/routes/bookmarks.routes'
 import likesRouters from '~/routes/likes.routes'
+import searchRouters from '~/routes/search.routes'
 
 // create fake users data ( uncomment this line bellow to create fake data)
 // import '~/utils/fakeData'
@@ -39,6 +40,8 @@ app.use('/tweets', tweetsRouter)
 app.use('/bookmarks', bookmarksRouters)
 // Routes for likes
 app.use('/likes', likesRouters)
+// Routes for search
+app.use('/search', searchRouters)
 // Routes for static
 app.use('/static', staticRouters)
 // Error handler

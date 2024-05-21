@@ -13,7 +13,7 @@ const PASSWORD = 'Vuong123!'
 // id của mình , dùng để follow người khác
 const MYID = new ObjectId('6646cc14409bcc03d0a2a526')
 // số lượng user được tạo, mỗi user sẽ mặc định 2 tweet
-const USER_COUNT = 100
+const USER_COUNT = 10
 
 const createRandomUser = () => {
   const user: RegisterReqBody = {
@@ -34,9 +34,9 @@ const createRandomTweet = () => {
       min: 10,
       max: 160
     }),
-    hashtags: [],
+    hashtags: ['VuongIT'],
     medias: [],
-    mentions: [],
+    mentions: ['6646cc14409bcc03d0a2a526'],
     parent_id: null
   }
   return tweet

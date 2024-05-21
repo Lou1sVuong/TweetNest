@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { bookmarkTweetController, unBookmarkTweetController } from '~/controllers/bookmarks.controlers'
+import { bookmarkTweetController, unBookmarkTweetController } from '~/controllers/bookmarks.controllers'
 import { tweetIdValidation } from '~/middlewares/tweets.middlewares'
 import { accessTokenValidation, verifiedUserValidation } from '~/middlewares/users.middlewares'
 import { wrapRequestHandler } from '~/utils/handlers'
