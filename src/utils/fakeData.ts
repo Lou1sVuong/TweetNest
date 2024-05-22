@@ -13,7 +13,7 @@ const PASSWORD = 'Vuong123!'
 // id của mình , dùng để follow người khác
 const MYID = new ObjectId('6646cc14409bcc03d0a2a526')
 // số lượng user được tạo, mỗi user sẽ mặc định 2 tweet
-const USER_COUNT = 20
+const USER_COUNT = 40
 
 const createRandomUser = () => {
   const user: RegisterReqBody = {

@@ -1,5 +1,6 @@
 import { Router } from 'express'
 import { searchController } from '~/controllers/search.controllers'
+import { accessTokenValidation, verifiedUserValidation } from '~/middlewares/users.middlewares'
 import { wrapRequestHandler } from '~/utils/handlers'
 
 const searchRouters = Router()
@@ -11,6 +12,6 @@ const searchRouters = Router()
  * Body : { tweet_id : string}
  * Header: {Authorization: Bearer token}
  */
-searchRouters.get('/', wrapRequestHandler(searchController))
+searchRouters.get('/', accessTokenValidation, verifiedUserValidation, wrapRequestHandler(searchController))
 
 export default searchRouters

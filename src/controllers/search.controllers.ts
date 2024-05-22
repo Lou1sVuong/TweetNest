@@ -13,12 +13,14 @@ export const searchController = async (
   const page = Number(req.query.page)
   const content = req.query.content
   const media_type = req.query.media_type
+  const people_follow = req.query.people_follow
   const user_id = req.decoded_authorization?.user_id as string
   const result = await searchService.search({
     limit,
     page,
     content,
     user_id,
+    people_follow,
     media_type
   })
   res.json({
