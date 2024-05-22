@@ -123,3 +123,7 @@ export const TWEET_CHIRLDREN_MESSAGES = {
   LIMIT_MUST_BE_BETWEEN_1_AND_100: 'Limit must be between 1 and 100',
   LIMIT_MUST_BE_LESS_THAN_1: 'Limit must be less than 1'
 } as const
+
+export const SEARCH_MESSAGES = {
+  SEARCH_SUCCESSFULLY: 'Search successfully'
+} as const

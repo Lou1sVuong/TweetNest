@@ -13,7 +13,7 @@ const PASSWORD = 'Vuong123!'
 // id của mình , dùng để follow người khác
 const MYID = new ObjectId('6646cc14409bcc03d0a2a526')
 // số lượng user được tạo, mỗi user sẽ mặc định 2 tweet
-const USER_COUNT = 10
+const USER_COUNT = 20
 
 const createRandomUser = () => {
   const user: RegisterReqBody = {
@@ -30,12 +30,19 @@ const createRandomTweet = () => {
   const tweet: TweetReqBody = {
     type: TweetType.Tweet,
     audience: TweetAudience.Everyone,
-    content: faker.lorem.paragraph({
-      min: 10,
-      max: 160
-    }),
+    content:
+      'vuong ' +
+      faker.lorem.paragraph({
+        min: 10,
+        max: 160
+      }),
     hashtags: ['VuongIT'],
-    medias: [],
+    medias: [
+      {
+        type: 2,
+        url: 'https://picsum.photos/200/300'
+      }
+    ],
     mentions: ['6646cc14409bcc03d0a2a526'],
     parent_id: null
   }

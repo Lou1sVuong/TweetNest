@@ -22,6 +22,7 @@ databaseServices.connect().then(() => {
   databaseServices.indexRefreshTokens()
   databaseServices.indexFollowers()
   databaseServices.indexVideoStatus()
+  databaseServices.indexTweets()
 })
 const app = express()
 app.use(cors())
