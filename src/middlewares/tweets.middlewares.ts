@@ -335,7 +335,7 @@ export const panigationValidation = validate(
           options: (value, { req }) => {
             const num = Number(value)
             if (num < 1) {
-              throw new Error(TWEET_CHIRLDREN_MESSAGES.LIMIT_MUST_BE_LESS_THAN_1)
+              throw new Error(TWEET_CHIRLDREN_MESSAGES.LIMIT_MUST_BE_GREATER_THAN_0)
             }
             return true
           }

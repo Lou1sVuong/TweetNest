@@ -121,9 +121,12 @@ export const LIKE_MESSGAGES = {
 
 export const TWEET_CHIRLDREN_MESSAGES = {
   LIMIT_MUST_BE_BETWEEN_1_AND_100: 'Limit must be between 1 and 100',
-  LIMIT_MUST_BE_LESS_THAN_1: 'Limit must be less than 1'
+  LIMIT_MUST_BE_GREATER_THAN_0: 'Limit must be greater than 0'
 } as const
 
 export const SEARCH_MESSAGES = {
-  SEARCH_SUCCESSFULLY: 'Search successfully'
+  SEARCH_SUCCESSFULLY: 'Search successfully',
+  CONTENT_MUST_BE_A_STRING: 'Content must be a string',
+  MEDIA_TYPE_INVALID: 'Media type is invalid',
+  PEOPLE_FOLLOW_INVALID: 'People follow is invalid, must be 0 or 1'
 } as const
