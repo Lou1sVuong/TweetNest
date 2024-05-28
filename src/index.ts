@@ -11,7 +11,7 @@ import tweetsRouter from '~/routes/tweets.routes'
 import bookmarksRouters from '~/routes/bookmarks.routes'
 import likesRouters from '~/routes/likes.routes'
 import searchRouters from '~/routes/search.routes'
-
+import '~/utils/s3'
 // create fake users data ( uncomment this line bellow to create fake data)
 // import '~/utils/fakeData'
 

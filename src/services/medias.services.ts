@@ -14,6 +14,7 @@ import databaseServices from '~/services/database.services'
 import VideoStatus from '~/models/schemas/videoStatus.schemas'
 import { ErrorWithStatus } from '~/models/errors'
 import HTTP_STATUS from '~/constants/httpStatus'
+import { uploadFileToS3 } from '~/utils/s3'
 config()
 
 class Queue {
@@ -102,15 +103,26 @@ class MediasService {
     const result: Media[] = await Promise.all(
       files.map(async (file) => {
         const newName = getNameFileFromFullName(file.newFilename)
-        const newPath = path.resolve(UPLOAD_IMAGE_DIR, `${newName}.jpg`)
-        await sharp(file.filepath).jpeg({ quality: 80 }).toFile(newPath)
-        fs.unlinkSync(file.filepath)
+        const newFullFilename = `${newName}.jpg`
+        const newPath = path.resolve(UPLOAD_IMAGE_DIR, newFullFilename)
+
+        await sharp(file.filepath).jpeg().toFile(newPath)
+        const s3Result = await uploadFileToS3({
+          fileName: newFullFilename,
+          filePath: newPath,
+          contentType: 'image/jpeg'
+        })
+        await Promise.all([fsPromise.unlink(file.filepath), fsPromise.unlink(newPath)])
         return {
-          url: isProduction
-            ? `${process.env.HOST}/static/${newName}.jpg`
-            : `http://localhost:${process.env.PORT}/static/image/${newName}.jpg`,
+          url: s3Result.Location as string,
           type: Mediatype.Image
         }
+        // return {
+        //   url: isProduction
+        //     ? `${process.env.HOST}/static/${newFullFilename}`
+        //     : `http://localhost:${process.env.PORT}/static/image/${newFullFilename}`,
+        //   type: Mediatype.Image
+        // }
       })
     )
     return result
