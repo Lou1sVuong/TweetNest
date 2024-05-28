@@ -117,12 +117,6 @@ class MediasService {
           url: s3Result.Location as string,
           type: Mediatype.Image
         }
-        // return {
-        //   url: isProduction
-        //     ? `${process.env.HOST}/static/${newFullFilename}`
-        //     : `http://localhost:${process.env.PORT}/static/image/${newFullFilename}`,
-        //   type: Mediatype.Image
-        // }
       })
     )
     return result
