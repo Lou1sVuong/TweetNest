@@ -3,7 +3,7 @@ import fsPromise from 'fs/promises'
 import { Request } from 'express'
 import { getFiles, getNameFileFromFullName, handleUploadImage, handleUploadVideo } from '~/utils/file'
 import sharp from 'sharp'
-import { UPLOAD_IMAGE_DIR, UPLOAD_VIDEO_DIR } from '~/constants/dir'
+import { UPLOAD_IMAGE_DIR, UPLOAD_IMAGE_TEMP_DIR, UPLOAD_VIDEO_DIR } from '~/constants/dir'
 import path from 'path'
 import { isProduction } from '~/utils/config'
 import { config } from 'dotenv'
@@ -15,7 +15,7 @@ import VideoStatus from '~/models/schemas/videoStatus.schemas'
 import { ErrorWithStatus } from '~/models/errors'
 import HTTP_STATUS from '~/constants/httpStatus'
 import { uploadFileToS3 } from '~/utils/s3'
-import { rimrafSync } from 'rimraf'
+import { rimrafSync, rimraf } from 'rimraf'
 config()
 
 class Queue {
@@ -116,22 +116,29 @@ class MediasService {
     const result: Media[] = await Promise.all(
       files.map(async (file) => {
         const newName = getNameFileFromFullName(file.newFilename)
+        const extension = path.extname(file.newFilename).toLowerCase()
         const newFullFilename = `${newName}.jpg`
         const newPath = path.resolve(UPLOAD_IMAGE_DIR, newFullFilename)
-
-        await sharp(file.filepath).jpeg().toFile(newPath)
+        if (extension === '.jpg' || extension === '.jpeg') {
+          // Nếu file đã là JPEG, chỉ cần đổi tên và chuyển đến newPath
+          await fsPromise.rename(file.filepath, newPath)
+        } else {
+          // Nếu file không phải JPEG, dùng sharp để chuyển đổi
+          await sharp(file.filepath).jpeg().toFile(newPath)
+        }
         const s3Result = await uploadFileToS3({
           fileName: 'images/' + newFullFilename,
           filePath: newPath,
           contentType: 'image/jpeg'
         })
-        await Promise.all([fsPromise.unlink(file.filepath), fsPromise.unlink(newPath)])
+        rimraf(newPath)
         return {
           url: s3Result.Location as string,
           type: Mediatype.Image
         }
       })
     )
+
     return result
   }
   async UploadVideo(req: Request) {
@@ -145,7 +152,8 @@ class MediasService {
           contentType: 'video/mp4'
         })
         // const PathofFolder = removeLastPart(video.filepath)
-        fs.promises.unlink(video.filepath)
+        const PathofFolder = video.filepath.replace(video.newFilename, '')
+        rimrafSync(PathofFolder)
         return {
           url: S3Result.Location as string,
           type: Mediatype.Video
