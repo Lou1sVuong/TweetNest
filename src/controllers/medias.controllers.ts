@@ -3,6 +3,7 @@ import path from 'path'
 import { UPLOAD_IMAGE_DIR, UPLOAD_VIDEO_DIR, UPLOAD_VIDEO_TEMP_DIR } from '~/constants/dir'
 import { USERS_MESSAGES } from '~/constants/messages'
 import mediasService from '~/services/medias.services'
+import { sendFileFromS3 } from '~/utils/s3'
 
 export const uploadImageController = async (req: Request, res: Response, next: NextFunction) => {
   const url = await mediasService.UploadImage(req)
@@ -48,7 +49,8 @@ export const serveImageController = (req: Request, res: Response, next: NextFunc
 
 export const serveVideoController = (req: Request, res: Response, next: NextFunction) => {
   const { name } = req.params
-  return res.sendFile(path.resolve(UPLOAD_VIDEO_DIR, name), (err) => {
+  const folder = name.split('.')[0]
+  return res.sendFile(path.resolve(UPLOAD_VIDEO_DIR, folder, name), (err) => {
     if (err) {
       return res.status((err as any).status).send(USERS_MESSAGES.VIDEO_NOT_FOUND)
     }
@@ -57,19 +59,21 @@ export const serveVideoController = (req: Request, res: Response, next: NextFunc
 
 export const serveM3u8Controller = (req: Request, res: Response, next: NextFunction) => {
   const { id } = req.params
+  sendFileFromS3(res, `videos-hls/${id}/master.m3u8`)
   // const readId = id.replace('.m3u8', '')
-  return res.sendFile(path.resolve(UPLOAD_VIDEO_DIR, id, 'master.m3u8'), (err) => {
-    if (err) {
-      return res.status((err as any).status).send(USERS_MESSAGES.VIDEO_NOT_FOUND)
-    }
-  })
+  // return res.sendFile(path.resolve(UPLOAD_VIDEO_DIR, id, 'master.m3u8'), (err) => {
+  //   if (err) {
+  //     return res.status((err as any).status).send(USERS_MESSAGES.VIDEO_NOT_FOUND)
+  //   }
+  // })
 }
 
 export const serveSegmentController = (req: Request, res: Response, next: NextFunction) => {
   const { id, v, segment } = req.params
-  return res.sendFile(path.resolve(UPLOAD_VIDEO_DIR, id, v, segment), (err) => {
-    if (err) {
-      return res.status((err as any).status).send(USERS_MESSAGES.VIDEO_NOT_FOUND)
-    }
-  })
+  sendFileFromS3(res, `videos-hls/${id}/${v}/${segment}`)
+  // return res.sendFile(path.resolve(UPLOAD_VIDEO_DIR, id, v, segment), (err) => {
+  //   if (err) {
+  //     return res.status((err as any).status).send(USERS_MESSAGES.VIDEO_NOT_FOUND)
+  //   }
+  // })
 }

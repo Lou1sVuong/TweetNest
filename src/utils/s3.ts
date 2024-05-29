@@ -2,6 +2,7 @@ import { Upload } from '@aws-sdk/lib-storage'
 import { S3 } from '@aws-sdk/client-s3'
 import fs from 'fs'
 import { config } from 'dotenv'
+import { Response } from 'express'
 
 config()
 const s3 = new S3({
@@ -41,6 +42,18 @@ export const uploadFileToS3 = ({
     leavePartsOnError: false
   })
   return parallelUploads3.done()
+}
+
+export const sendFileFromS3 = async (res: Response, filePath: string) => {
+  try {
+    const data = await s3.getObject({
+      Bucket: process.env.BUCKET_NAME as string,
+      Key: filePath
+    })
+    ;(data.Body as any).pipe(res)
+  } catch (error) {
+    res.status(404).send('File not found')
+  }
 }
 
 // parallelUploads3.on('httpUploadProgress', (progress) => {

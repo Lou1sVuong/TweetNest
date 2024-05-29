@@ -1,9 +1,9 @@
 import fs from 'fs'
 import fsPromise from 'fs/promises'
 import { Request } from 'express'
-import { getNameFileFromFullName, handleUploadImage, handleUploadVideo } from '~/utils/file'
+import { getFiles, getNameFileFromFullName, handleUploadImage, handleUploadVideo } from '~/utils/file'
 import sharp from 'sharp'
-import { UPLOAD_IMAGE_DIR } from '~/constants/dir'
+import { UPLOAD_IMAGE_DIR, UPLOAD_VIDEO_DIR } from '~/constants/dir'
 import path from 'path'
 import { isProduction } from '~/utils/config'
 import { config } from 'dotenv'
@@ -15,6 +15,7 @@ import VideoStatus from '~/models/schemas/videoStatus.schemas'
 import { ErrorWithStatus } from '~/models/errors'
 import HTTP_STATUS from '~/constants/httpStatus'
 import { uploadFileToS3 } from '~/utils/s3'
+import { rimrafSync } from 'rimraf'
 config()
 
 class Queue {
@@ -54,7 +55,19 @@ class Queue {
       try {
         await encodeHLSWithMultipleVideoStreams(videoPath)
         this.items.shift()
-        await fsPromise.unlink(videoPath)
+        const file = getFiles(path.resolve(UPLOAD_VIDEO_DIR, idName))
+        await Promise.all(
+          file.map((filepath) => {
+            const filename = 'video-hls' + filepath.replace(path.resolve(UPLOAD_VIDEO_DIR), '')
+            const newFilename = filename.replace(/\\/g, '/')
+            return uploadFileToS3({
+              filePath: filepath,
+              fileName: newFilename,
+              contentType: 'application/x-mpegURL'
+            })
+          })
+        )
+        rimrafSync(path.resolve(UPLOAD_VIDEO_DIR, idName))
         await databaseServices.videoStatus.updateOne(
           { name: idName },
           {
@@ -108,7 +121,7 @@ class MediasService {
 
         await sharp(file.filepath).jpeg().toFile(newPath)
         const s3Result = await uploadFileToS3({
-          fileName: newFullFilename,
+          fileName: 'images/' + newFullFilename,
           filePath: newPath,
           contentType: 'image/jpeg'
         })
@@ -123,14 +136,28 @@ class MediasService {
   }
   async UploadVideo(req: Request) {
     const files = await handleUploadVideo(req)
-    const result = files.map((video) => {
-      return {
-        url: isProduction
-          ? `${process.env.HOST}/static/video/${video.newFilename}`
-          : `http://localhost:${process.env.PORT}/static/video/${video.newFilename}`,
-        type: Mediatype.Video
-      }
-    })
+
+    const result: Media[] = await Promise.all(
+      files.map(async (video) => {
+        const S3Result = await uploadFileToS3({
+          fileName: 'videos/' + video.newFilename,
+          filePath: video.filepath,
+          contentType: 'video/mp4'
+        })
+        // const PathofFolder = removeLastPart(video.filepath)
+        fs.promises.unlink(video.filepath)
+        return {
+          url: S3Result.Location as string,
+          type: Mediatype.Video
+        }
+        // return {
+        //   url: isProduction
+        //     ? `${process.env.HOST}/static/video/${video.newFilename}`
+        //     : `http://localhost:${process.env.PORT}/static/video/${video.newFilename}`,
+        //   type: Mediatype.Video
+        // }
+      })
+    )
     return result
   }
 
@@ -142,8 +169,8 @@ class MediasService {
         queue.enqueue(file.filepath)
         return {
           url: isProduction
-            ? `${process.env.HOST}/static/video-hls/${newName}.m3u8`
-            : `http://localhost:${process.env.PORT}/static/video-hls/${newName}.m3u8`,
+            ? `${process.env.HOST}/static/video-hls/${newName}/master.m3u8`
+            : `http://localhost:${process.env.PORT}/static/video-hls/${newName}/master.m3u8`,
           type: Mediatype.HLS
         }
       })
