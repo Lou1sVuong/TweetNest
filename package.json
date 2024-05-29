@@ -31,7 +31,6 @@
     "formidable": "^3.5.1",
     "jsonwebtoken": "^9.0.2",
     "lodash": "^4.17.21",
-    "mime": "^4.0.3",
     "minimist": "^1.2.8",
     "mongodb": "^6.5.0",
     "sharp": "^0.33.3",
