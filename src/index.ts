@@ -11,7 +11,9 @@ import tweetsRouter from '~/routes/tweets.routes'
 import bookmarksRouters from '~/routes/bookmarks.routes'
 import likesRouters from '~/routes/likes.routes'
 import searchRouters from '~/routes/search.routes'
-import '~/utils/s3'
+import { createServer } from 'http'
+import { Server } from 'socket.io'
+
 // create fake users data ( uncomment this line bellow to create fake data)
 // import '~/utils/fakeData'
 
@@ -25,6 +27,7 @@ databaseServices.connect().then(() => {
   databaseServices.indexTweets()
 })
 const app = express()
+const httpServer = createServer(app)
 app.use(cors())
 const port = process.env.PORT || 4000
 // init folder uploads
@@ -51,6 +54,14 @@ app.use(defaultErrorHandler)
 app.use('/health', (req, res) => {
   res.send(`dope shit man, i'm still alive`)
 })
-app.listen(port, () => {
+
+const io = new Server(httpServer, {
+  /* options */
+})
+
+io.on('connection', (socket) => {
+  console.log(socket)
+})
+httpServer.listen(port, () => {
   console.log(`Server is running at port :${port}`)
 })
