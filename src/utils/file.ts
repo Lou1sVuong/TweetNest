@@ -4,6 +4,8 @@ import { File } from 'formidable'
 import { UPLOAD_IMAGE_TEMP_DIR, UPLOAD_VIDEO_DIR, UPLOAD_VIDEO_TEMP_DIR } from '~/constants/dir'
 import { v4 as uuidv4 } from 'uuid'
 import path from 'path'
+import { ErrorWithStatus } from '~/models/errors'
+import HTTP_STATUS from '~/constants/httpStatus'
 
 export const initFolder = () => {
   ;[UPLOAD_IMAGE_TEMP_DIR, UPLOAD_VIDEO_TEMP_DIR].forEach((dir) => {
@@ -36,7 +38,12 @@ export const handleUploadImage = async (req: Request) => {
       }
       // eslint-disable-next-line no-extra-boolean-cast
       if (!Boolean(files.image)) {
-        return reject(new Error('File is empty'))
+        return reject(
+          new ErrorWithStatus({
+            message: 'File is empty',
+            status: HTTP_STATUS.BAD_REQUEST
+          })
+        )
       }
       resolve(files.image as File[])
     })
@@ -71,7 +78,12 @@ export const handleUploadVideo = async (req: Request) => {
       }
       // eslint-disable-next-line no-extra-boolean-cast
       if (!Boolean(files.video)) {
-        return reject(new Error('File is empty'))
+        return reject(
+          new ErrorWithStatus({
+            message: 'File is empty',
+            status: HTTP_STATUS.BAD_REQUEST
+          })
+        )
       }
       const video = files.video as File[]
       video.forEach((video) => {
