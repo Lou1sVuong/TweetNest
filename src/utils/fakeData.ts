@@ -11,9 +11,9 @@ import { hashPassword } from '~/utils/crypto'
 // mật khẩu cho các fake user
 const PASSWORD = 'Vuong123!'
 // id của mình , dùng để follow người khác
-const MYID = new ObjectId('6646cc14409bcc03d0a2a526')
+const MYID = new ObjectId('6659f5ca13f0475af1d10a9a')
 // số lượng user được tạo, mỗi user sẽ mặc định 2 tweet
-const USER_COUNT = 40
+const USER_COUNT = 50
 
 const createRandomUser = () => {
   const user: RegisterReqBody = {
@@ -31,7 +31,7 @@ const createRandomTweet = () => {
     type: TweetType.Tweet,
     audience: TweetAudience.Everyone,
     content:
-      'vuong ' +
+      // 'vuong ' +
       faker.lorem.paragraph({
         min: 10,
         max: 160
@@ -43,7 +43,7 @@ const createRandomTweet = () => {
         url: 'https://picsum.photos/200/300'
       }
     ],
-    mentions: ['6646cc14409bcc03d0a2a526'],
+    mentions: ['6659f5ca13f0475af1d10a9a'],
     parent_id: null
   }
   return tweet
@@ -90,6 +90,20 @@ const followMultipleUsers = async (user_id: ObjectId, followed_user_ids: ObjectI
   console.log(`Followed ${result.length} users`)
 }
 
+const followMe = async (user_id: ObjectId, followed_user_ids: ObjectId[]) => {
+  console.log('Start following users...')
+  const result = await Promise.all(
+    followed_user_ids.map((followed_user_id) =>
+      databaseServices.followers.insertOne(
+        new Follower({
+          user_id: new ObjectId(followed_user_id),
+          followed_user_id: user_id
+        })
+      )
+    )
+  )
+}
+
 export const insertMultipleTweets = async (ids: ObjectId[]) => {
   console.log('Creating tweets...')
   console.log('Counting ...')
@@ -110,4 +124,5 @@ export const insertMultipleTweets = async (ids: ObjectId[]) => {
 insertMultipleUsers(users).then((ids) => {
   followMultipleUsers(new ObjectId(MYID), ids)
   insertMultipleTweets(ids)
+  followMe(new ObjectId(MYID), ids)
 })
