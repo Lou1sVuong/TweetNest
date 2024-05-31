@@ -313,6 +313,7 @@ class UsersService {
 
     const user = await databaseServices.users.findOne(param, {
       projection: {
+        email: 0,
         password: 0,
         email_verification_token: 0,
         forgot_password_token: 0,
