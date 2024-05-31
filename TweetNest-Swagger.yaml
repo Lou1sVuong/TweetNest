@@ -1,0 +1,741 @@
+openapi: 3.0.3
+info:
+  title: TweetNest - OpenAPI 3.0
+  description: |-
+    TweetNest Swagger API
+  version: 1.0.11
+externalDocs:
+  description: Find out more about Swagger
+  url: http://swagger.io
+servers:
+  - url: http://localhost:8000
+tags:
+  - name: users
+    description: Operations about users
+  - name: medias
+    description: Operations about medias
+paths:
+  /users/register:
+    post:
+      tags:
+        - users
+      summary: register new user
+      description: Register a new user
+      operationId: register
+      requestBody:
+        description: register user info
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegisterBody"
+        required: true
+      responses:
+        "200":
+          description: login successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Register successfully
+                  result:
+                    $ref: "#/components/schemas/SuccessAuthentication"
+
+        "422":
+          description: Invalid input
+  /users/login:
+    post:
+      tags:
+        - users
+      summary: login
+      description: Logs user into the TweetNest
+      operationId: login
+      requestBody:
+        description: login user info
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginBody"
+        required: true
+      responses:
+        "200":
+          description: login successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Login successfully
+                  result:
+                    $ref: "#/components/schemas/SuccessAuthentication"
+
+        "422":
+          description: Invalid input
+  /users/refresh-token:
+    post:
+      tags:
+        - users
+      summary: refresh token
+      description: Refresh token
+      operationId: refreshToken
+      requestBody:
+        description: refresh token info
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RefreshTokenReqBody"
+        required: true
+      responses:
+        "200":
+          description: login successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Refresh token successfully
+                  result:
+                    $ref: "#/components/schemas/SuccessAuthentication"
+
+        "401":
+          description: Invalid token
+  /users/logout:
+    post:
+      tags:
+        - users
+      summary: logout
+      description: Logs out current logged in user session
+      operationId: logout
+      requestBody:
+        description: logout token info
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LogoutReqBody"
+        required: true
+      responses:
+        "200":
+          description: logout successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Logout successfully
+
+        "401":
+          description: Used refresh token or not exist
+  /users/verify-email:
+    post:
+      tags:
+        - users
+      summary: verify email
+      description: Verify email
+      operationId: verifyEmail
+      requestBody:
+        description: email verify token info
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EmailVerifyReqBody"
+        required: true
+      responses:
+        "200":
+          description: Email verified successfully **or** Email already verified
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Email verified successfully
+                  result:
+                    $ref: "#/components/schemas/SuccessAuthentication"
+        "401":
+          description: Used refresh token or not exist
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Invalid token
+  /users/resend-verify-email:
+    post:
+      tags:
+        - users
+      summary: resend verify email
+      description: Resend verify email
+      operationId: resendVerifyEmail
+      security:
+        - BearerAuth: []
+      responses:
+        "200":
+          description: resend verify email successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Resend verify email successfully
+
+        "404":
+          description: User not found
+  /users/forgot-password:
+    post:
+      tags:
+        - users
+      summary: forgot password
+      description: Forgot password
+      operationId: forgotPassword
+      security:
+        - BearerAuth: []
+      requestBody:
+        description: forgot password info
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ForgotPasswordReqBody"
+        required: true
+      responses:
+        "200":
+          description: forgot password successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Forgot password successfully
+
+        "404":
+          description: User not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: User not found
+  /users/verify-forgot-password:
+    post:
+      tags:
+        - users
+      summary: verify forgot password
+      description: Verify forgot password
+      operationId: verifyForgotPassword
+      requestBody:
+        description: forgot password verify token info
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ForgotPasswordReqBody"
+        required: true
+      responses:
+        "200":
+          description: Check your email to reset password
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Verify forgot password successfully
+        "401":
+          description: Used refresh token or not exist
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Forgot password token is invalid
+  /users/reset-password:
+    post:
+      tags:
+        - users
+      summary: reset password
+      description: Reset password
+      operationId: resetPassword
+      requestBody:
+        description: reset password info
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ResetPasswordReqBody"
+        required: true
+      responses:
+        "200":
+          description: Reset password successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Reset password successfully
+        "401":
+          description: Used refresh token or not exist
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Invalid token
+        "422":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Confirm password must match with password
+  /users/change-password:
+    put:
+      tags:
+        - users
+      summary: change password
+      description: Change password
+      operationId: changePassword
+      security:
+        - BearerAuth: []
+      requestBody:
+        description: change password info
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ChangePasswordReqBody"
+        required: true
+      responses:
+        "200":
+          description: Change password successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Change password successfully
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: access_token is required
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: User not verified
+        "422":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Confirm password must match with new password *Or* Old password is incorrect
+  /users/me:
+    get:
+      tags:
+        - users
+      summary: get me info
+      description: get me info
+      operationId: getMe
+      security:
+        - BearerAuth: []
+      responses:
+        "200":
+          description: Get me successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Get user info successfully
+                  result:
+                    $ref: "#/components/schemas/User"
+
+        "401":
+          description: Unauthorized
+    patch:
+      tags:
+        - users
+      summary: update user info
+      description: Update user info
+      operationId: updateMe
+      security:
+        - BearerAuth: []
+      requestBody:
+        description: update user info, **fields are optional**
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/updateMeReqBody"
+        required: true
+      responses:
+        "200":
+          description: Update me successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Update profile successfully
+                  result:
+                    type: object
+                    example: {}
+
+        "401":
+          description: Unauthorized
+        "422":
+          description: Validation error
+  /users/{user_id}:
+    get:
+      tags:
+        - users
+      summary: get user info by id or username
+      description: Get user info by id or username
+      operationId: getUserByIdOrUsername
+      parameters:
+        - name: user_id or username
+          in: path
+          description: user_id or username to return
+          required: true
+          schema:
+            type: string
+            format: mongoId
+      responses:
+        "200":
+          description: Get profile successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Get user info successfully
+                  result:
+                    $ref: "#/components/schemas/getProfileSuccessfully"
+
+        "404":
+          description: User not found
+  /users/follow:
+    post:
+      tags:
+        - users
+      summary: follow user
+      description: Follow user
+      operationId: followUser
+      security:
+        - BearerAuth: []
+      requestBody:
+        description: follow user info
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                followed_user_id:
+                  type: string
+                  format: mongoId
+                  example: "6657396c96dd7638a3bf4a70"
+        required: true
+      responses:
+        "200":
+          description: Follow user successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Follow successfully
+
+        "404":
+          description: User not found
+  /users/follow/{user_id}:
+    delete:
+      tags:
+        - users
+      summary: unfollow user
+      description: Unfollow user
+      operationId: unfollowUser
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: user_id
+          in: path
+          description: user_id to unfollow
+          required: true
+          schema:
+            type: string
+            format: mongoId
+      responses:
+        "200":
+          description: Unfollow user successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Unfollow successfully
+
+        "404":
+          description: User not found
+
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        _id:
+          type: string
+          format: mongoId
+          example: "6657396c96dd7638a3bf4a70"
+        name:
+          type: string
+          example: "Louis Vuong"
+        email:
+          type: string
+          example: "tweetnest.user@gmail.com"
+        date_of_birth:
+          type: string
+          format: ISO8601
+          example: "2004-04-24T14:26:49.077Z"
+        created_at:
+          type: string
+          format: ISO8601
+          example: "2024-05-29T14:19:24.890Z"
+        updated_at:
+          type: string
+          format: ISO8601
+          example: "2024-05-29T14:19:24.890Z"
+        verify:
+          $ref: "#/components/schemas/userVerificationStatus"
+        twitter_circle:
+          type: array
+          items:
+            type: string
+            format: mongoId
+          example: ["6657396c96dd7638a3bf4a70", "6657396c96dd7638a3bf4a70"]
+        bio:
+          type: string
+          example: "This is a sample bio."
+        location:
+          type: string
+          example: "Ho Chi Minh city, Vietnam"
+        website:
+          type: string
+          example: "https://example.com"
+        username:
+          type: string
+          example: "vuonglouis"
+        avatar:
+          type: string
+          example: "https://example.com/avatar.jpg"
+        cover_photo:
+          type: string
+          example: "https://example.com/cover.jpg"
+    SuccessAuthentication:
+      type: object
+      properties:
+        access_token:
+          type: string
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjY1NzM5NmM5NmRkNzYzOGEzYmY0YTcwIiwidG9rZW5fdHlwZSI6MCwidmVyaWZ5IjowLCJpYXQiOjE3MTcwODU0ODYsImV4cCI6MTcxNzA5NDQ4Nn0.vhnf452xWcF67g0anspkaBt91af7nwM-dORzXP7BHr4
+        refresh_token:
+          type: string
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjY1NzM5NmM5NmRkNzYzOGEzYmY0YTcwIiwidG9rZW5fdHlwZSI6MSwidmVyaWZ5IjowLCJpYXQiOjE3MTcwODU0ODYsImV4cCI6MTcxNzM0NDY4Nn0.M3uACUk6RvmRITP8ARqluUly0hHWLSFpanxrD5x471Y
+    userVerificationStatus:
+      type: number
+      enum: [Unverified, Verified, Blocked]
+      example: 1
+    RegisterBody:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "Louis Vuong"
+        email:
+          type: string
+          example: "tweetnest.user@gmail.com"
+        password:
+          type: string
+          example: "Tweetnest@123"
+        confirm_password:
+          type: string
+          example: "Tweetnest@123"
+        date_of_birth:
+          type: string
+          format: ISO8601
+          example: "2004-04-24T14:26:49.077Z"
+    LoginBody:
+      type: object
+      properties:
+        email:
+          type: string
+          example: tweetnest.user@gmail.com
+        password:
+          type: string
+          example: Tweetnest@123
+    RefreshTokenReqBody:
+      type: object
+      properties:
+        refresh_token:
+          type: string
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjY1NzM5NmM5NmRkNzYzOGEzYmY0YTcwIiwidG9rZW5fdHlwZSI6MSwidmVyaWZ5IjowLCJpYXQiOjE3MTcwODU0ODYsImV4cCI6MTcxNzM0NDY4Nn0.M3uACUk6RvmRITP8ARqluUly0hHWLSFpanxrD5x471Y
+    LogoutReqBody:
+      type: object
+      properties:
+        refresh_token:
+          type: string
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjY1NzM5NmM5NmRkNzYzOGEzYmY0YTcwIiwidG9rZW5fdHlwZSI6MSwidmVyaWZ5IjowLCJpYXQiOjE3MTcwODU0ODYsImV4cCI6MTcxNzM0NDY4Nn0.M3uACUk6RvmRITP8ARqluUly0hHWLSFpanxrD5x471Y
+    EmailVerifyReqBody:
+      type: object
+      properties:
+        email_verify_token:
+          type: string
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjY1NzM5NmM5NmRkNzYzOGEzYmY0YTcwIiwidG9rZW5fdHlwZSI6MSwidmVyaWZ5IjowLCJpYXQiOjE3MTcwODU0ODYsImV4cCI6MTcxNzM0NDY4Nn0.M3uACUk6RvmRITP8ARqluUly0hHWLSFpanxrD5x471Y
+    ForgotPasswordReqBody:
+      type: object
+      properties:
+        forgot_password_token:
+          type: string
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjY1NzM5NmM5NmRkNzYzOGEzYmY0YTcwIiwidG9rZW5fdHlwZSI6MSwidmVyaWZ5IjowLCJpYXQiOjE3MTcwODU0ODYsImV4cCI6MTcxNzM0NDY4Nn0.M3uACUk6RvmRITP8ARqluUly0hHWLSFpanxrD5x471Y
+    ResetPasswordReqBody:
+      type: object
+      properties:
+        password:
+          type: string
+          example: Tweetnest@123_new
+        confirm_password:
+          type: string
+          example: Tweetnest@123_new
+        forgot_password_token:
+          type: string
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjY1NzM5NmM5NmRkNzYzOGEzYmY0YTcwIiwidG9rZW5fdHlwZSI6MSwidmVyaWZ5IjowLCJpYXQiOjE3MTcwODU0ODYsImV4cCI6MTcxNzM0NDY4Nn0.M3uACUk6RvmRITP8ARqluUly0hHWLSFpanxrD5x471Y
+    ChangePasswordReqBody:
+      type: object
+      properties:
+        old_password:
+          type: string
+          example: Tweetnest@123
+        password:
+          type: string
+          example: Tweetnest@123_new
+        confirm_password:
+          type: string
+          example: Tweetnest@123_new
+      required:
+        - old_password
+        - password
+        - confirm_password
+    updateMeReqBody:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "vuong louis"
+        date_of_birth:
+          type: string
+          format: date-time
+          example: "2004-04-24T14:26:49.077Z"
+        bio:
+          type: string
+          example: "This is a sample bio."
+        location:
+          type: string
+          example: "Hanoi, Vietnam"
+        username:
+          type: string
+          example: "vuonglouis"
+        avatar:
+          type: string
+          example: "https://example.com/avatar.jpg"
+        cover_photo:
+          type: string
+          example: "https://example.com/cover.jpg"
+    getProfileSuccessfully:
+      type: object
+      properties:
+        _id:
+          type: string
+          format: mongoId
+          example: "6657396c96dd7638a3bf4a70"
+        name:
+          type: string
+          example: "Louis Vuong"
+        date_of_birth:
+          type: string
+          format: ISO8601
+          example: "2004-04-24T14:26:49.077Z"
+        twitter_circle:
+          type: array
+          items:
+            type: string
+            format: mongoId
+          example: ["6657396c96dd7638a3bf4a70", "6657396c96dd7638a3bf4a70"]
+        bio:
+          type: string
+          example: "This is a sample bio."
+        location:
+          type: string
+          example: "Ho Chi Minh city, Vietnam"
+        website:
+          type: string
+          example: "https://example.com"
+        username:
+          type: string
+          example: "vuonglouis"
+        avatar:
+          type: string
+          example: "https://example.com/avatar.jpg"
+        cover_photo:
+          type: string
+          example: "https://example.com/cover.jpg"
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
