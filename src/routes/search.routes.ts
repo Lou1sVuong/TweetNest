@@ -8,7 +8,7 @@ import { wrapRequestHandler } from '~/utils/handlers'
 const searchRouters = Router()
 
 /**
- * Description: likes
+ * Description: Search for tweets
  * Path: /
  * Method: POST
  * Body : { tweet_id : string}
