@@ -274,16 +274,48 @@ class UsersService {
     }
   }
   async getMe(user_id: string) {
-    const user = databaseServices.users.findOne(
-      { _id: new ObjectId(user_id) },
-      {
-        projection: {
-          password: 0,
-          email_verification_token: 0,
-          forgot_password_token: 0
+    const user = databaseServices.users
+      .aggregate([
+        {
+          $match: {
+            _id: new ObjectId(user_id)
+          }
+        },
+        {
+          $lookup: {
+            from: 'followers',
+            localField: '_id',
+            foreignField: 'user_id',
+            as: 'following'
+          }
+        },
+        {
+          $lookup: {
+            from: 'followers',
+            localField: '_id',
+            foreignField: 'followed_user_id',
+            as: 'followers'
+          }
+        },
+        {
+          $addFields: {
+            following: {
+              $size: '$following'
+            },
+            followers: {
+              $size: '$followers'
+            }
+          }
+        },
+        {
+          $project: {
+            password: 0,
+            email_verification_token: 0,
+            forgot_password_token: 0
+          }
         }
-      }
-    )
+      ])
+      .toArray()
     return user
   }
 
@@ -311,17 +343,50 @@ class UsersService {
       param = { username: user_id }
     }
 
-    const user = await databaseServices.users.findOne(param, {
-      projection: {
-        email: 0,
-        password: 0,
-        email_verification_token: 0,
-        forgot_password_token: 0,
-        verify: 0,
-        created_at: 0,
-        updated_at: 0
-      }
-    })
+    const user = await databaseServices.users
+      .aggregate([
+        {
+          $match: {
+            ...param
+          }
+        },
+        {
+          $lookup: {
+            from: 'followers',
+            localField: '_id',
+            foreignField: 'user_id',
+            as: 'following'
+          }
+        },
+        {
+          $lookup: {
+            from: 'followers',
+            localField: '_id',
+            foreignField: 'followed_user_id',
+            as: 'followers'
+          }
+        },
+        {
+          $addFields: {
+            following: {
+              $size: '$following'
+            },
+            followers: {
+              $size: '$followers'
+            }
+          }
+        },
+        {
+          $project: {
+            password: 0,
+            email_verification_token: 0,
+            forgot_password_token: 0,
+            verify: 0,
+            updated_at: 0
+          }
+        }
+      ])
+      .toArray()
 
     if (!user) {
       throw new Error(USERS_MESSAGES.USER_NOT_FOUND)
