@@ -17,7 +17,7 @@ import swaggerUi from 'swagger-ui-express'
 import YAML from 'yaml'
 import fs from 'fs'
 import path from 'path'
-const file = fs.readFileSync(path.resolve('TweetNest-SWG.yaml'), 'utf8')
+const file = fs.readFileSync(path.resolve('TweetNest-Swagger.yaml'), 'utf8')
 const swaggerDocument = YAML.parse(file)
 
 // create fake users data ( uncomment this line bellow to create fake data)
