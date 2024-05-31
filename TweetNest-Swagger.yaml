@@ -14,7 +14,17 @@ tags:
     description: Operations about users
   - name: medias
     description: Operations about medias
+  - name: tweet
+    description: Operations about tweet
+  - name: bookmarks
+    description: Operations about bookmarks
+  - name: likes
+    description: Operations about likes
+  - name: search
+    description: Operations about search
+
 paths:
+  # users routes
   /users/register:
     post:
       tags:
@@ -524,7 +534,612 @@ paths:
 
         "404":
           description: User not found
+  # medias routes
+  /medias/upload-image:
+    post:
+      tags:
+        - medias
+      summary: upload image
+      description: Upload image
+      operationId: uploadImage
+      security:
+        - BearerAuth: []
+      requestBody:
+        description: image file
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                image:
+                  type: string
+                  format: binary
+        required: true
+      responses:
+        "200":
+          description: Upload image successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Upload image successfully
+                  url:
+                    type: object
+                    properties:
+                      url:
+                        type: string
+                        example: "https://tweet-nest.s3.ap-southeast-1.amazonaws.com/images/aa4775e1b410c993b397d2800.jpg"
+                      type:
+                        type: number
+                        example: 0
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: File is empty
+  /medias/upload-video:
+    post:
+      tags:
+        - medias
+      summary: upload video
+      description: Upload video
+      operationId: uploadVideo
+      security:
+        - BearerAuth: []
+      requestBody:
+        description: video file
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                video:
+                  type: string
+                  format: binary
+        required: true
+      responses:
+        "200":
+          description: Upload video successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Upload image successfully
+                  url:
+                    type: object
+                    properties:
+                      url:
+                        type: string
+                        example: "https://tweet-nest.s3.ap-southeast-1.amazonaws.com/videos/3b7bd31a-8b1e-49b8-90bd-40ee69a06066.mp4"
+                      type:
+                        type: number
+                        example: 1
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: File is empty
+  /medias/upload-video-hls:
+    post:
+      tags:
+        - medias
+      summary: upload video hls
+      description: Upload video hls
+      operationId: uploadVideoHls
+      security:
+        - BearerAuth: []
+      requestBody:
+        description: video file
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                video:
+                  type: string
+                  format: binary
+        required: true
+      responses:
+        "200":
+          description: Upload video hls successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Upload image successfully
+                  url:
+                    type: object
+                    properties:
+                      url:
+                        type: string
+                        example: "http://localhost:8000/static/video-hls/92d72696-74a4-4eb8-aed5-6c30bee85d06/master.m3u8"
+                      type:
+                        type: number
+                        example: 2
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: File is empty
+  /medias/video-status/{id}:
+    get:
+      tags:
+        - medias
+      summary: get video status
+      description: Get video status
+      operationId: getVideoStatus
+      security:
+        - BearerAuth: []
 
+      parameters:
+        - name: id
+          in: path
+          description: video id to return
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Get video status successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Get video status successfully
+                  result:
+                    type: object
+                    properties:
+                      _id:
+                        type: string
+                        format: mongoId
+                        example: "6657396c96dd7638a3bf4a70"
+                      name:
+                        type: string
+                        format: uuid
+                        example: "5577ddc2-6513-47e0-833d-e99fb3ab0bc9"
+                      status:
+                        $ref: "#/components/schemas/EncodingStatus"
+                      message:
+                        type: string
+                        example: ""
+                      created_at:
+                        type: string
+                        format: ISO8601
+                        example: "2024-05-31T09:24:08.390Z"
+                      updated_at:
+                        type: string
+                        format: ISO8601
+                        example: "2024-05-31T09:24:08.390Z"
+
+        "404":
+          description: Video not found
+  # tweet routes
+  /tweets:
+    post:
+      tags:
+        - tweet
+      summary: create tweet
+      description: Create tweet
+      operationId: createTweet
+      security:
+        - BearerAuth: []
+      requestBody:
+        description: tweet info
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TweetReqBody"
+        required: true
+      responses:
+        "200":
+          description: Create tweet successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Create tweet successfully
+                  result:
+                    $ref: "#/components/schemas/TweetResBody"
+        "422":
+          description: Validation error
+    get:
+      tags:
+        - tweet
+      security:
+        - BearerAuth: []
+      summary: get newfeeds
+      description: get newfeeds
+      operationId: getNewfeeds
+      parameters:
+        - in: query
+          name: page
+          required: false
+          schema:
+            type: integer
+            default: 1
+          description: Page number for pagination
+        - in: query
+          name: limit
+          required: false
+          schema:
+            type: integer
+            default: 10
+          description: Number of items per page
+      responses:
+        "200":
+          description: Get new feeds successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Get tweets successfully
+                  result:
+                    type: object
+                    properties:
+                      tweets:
+                        type: array
+                        items:
+                          $ref: "#/components/schemas/TweetResBody"
+                      limit:
+                        type: integer
+                        example: 10
+                      page:
+                        type: integer
+                        example: 1
+                      total_pages:
+                        type: integer
+                        example: 1
+
+        "400":
+          description: Bad request
+  /tweets/{tweet_id}:
+    get:
+      tags:
+        - tweet
+      summary: get tweet by id
+      description: Get tweet by id
+      operationId: getTweetById
+      parameters:
+        - name: tweet_id
+          in: path
+          description: tweet_id to return
+          required: true
+          schema:
+            type: string
+            format: mongoId
+      responses:
+        "200":
+          description: Get tweet successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Get tweet successfully
+                  result:
+                    $ref: "#/components/schemas/Tweet"
+        "404":
+          description: Tweet not found
+  /tweets/{tweet_id}/children:
+    get:
+      tags:
+        - tweet
+      summary: Get child tweets of a specific tweet
+      parameters:
+        - in: path
+          name: tweet_id
+          required: true
+          schema:
+            type: string
+          description: The ID of the tweet
+        - in: query
+          name: page
+          required: false
+          schema:
+            type: integer
+            default: 1
+          description: Page number for pagination
+        - in: query
+          name: limit
+          required: false
+          schema:
+            type: integer
+            default: 10
+          description: Number of items per page
+        - in: query
+          name: tweet_type
+          required: false
+          schema:
+            $ref: "#/components/schemas/TweetType"
+          description: "0: Tweet, 1: Retweet, 2: Comment, 3: Quote"
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Get child tweets successfully
+                  result:
+                    $ref: "#/components/schemas/GetTweetChildResBody"
+
+        "400":
+          description: Bad request
+        "404":
+          description: Not found
+  # bookmark routes
+  /bookmarks:
+    post:
+      tags:
+        - bookmarks
+      summary: bookmark tweet
+      description: Bookmark tweet
+      operationId: bookmarkTweet
+      security:
+        - BearerAuth: []
+      requestBody:
+        description: bookmark tweet info
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                tweet_id:
+                  type: string
+                  format: mongoId
+                  example: "6659af0533d2260df2c24a67"
+        required: true
+      responses:
+        "200":
+          description: Bookmark tweet successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Bookmark tweet successfully
+                  result:
+                    type: object
+                    properties:
+                      _id:
+                        type: string
+                        format: mongoId
+                        example: "6659b984340c0cd7d68b9557"
+                      tweet_id:
+                        type: string
+                        format: mongoId
+                        example: "6659af0533d2260df2c24a67"
+                      user_id:
+                        type: string
+                        format: mongoId
+                        example: "66595a4fece2643081b0ae8d"
+                      created_at:
+                        type: string
+                        format: ISO8601
+                        example: "2024-05-31T09:24:08.390Z"
+        "422":
+          description: Validation error
+        "404":
+          description: Tweet not found
+  /bookmarks//tweets/{tweet_id}:
+    delete:
+      tags:
+        - bookmarks
+      summary: unbookmark tweet
+      description: Unbookmark tweet
+      operationId: unbookmarkTweet
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: tweet_id
+          in: path
+          description: tweet_id to unbookmark
+          required: true
+          schema:
+            type: string
+            format: mongoId
+      responses:
+        "200":
+          description: Unbookmark tweet successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Unbookmark tweet successfully
+        "422":
+          description: Validation error
+        "404":
+          description: Tweet not found
+  # likes routes
+  /likes:
+    post:
+      tags:
+        - likes
+      summary: like tweet
+      description: Like tweet
+      operationId: likeTweet
+      security:
+        - BearerAuth: []
+      requestBody:
+        description: like tweet info
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                tweet_id:
+                  type: string
+                  format: mongoId
+                  example: "6659af0533d2260df2c24a67"
+        required: true
+      responses:
+        "200":
+          description: Like tweet successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Like tweet successfully
+                  result:
+                    type: object
+                    properties:
+                      _id:
+                        type: string
+                        format: mongoId
+                        example: "6659b984340c0cd7d68b9557"
+                      tweet_id:
+                        type: string
+                        format: mongoId
+                        example: "6659af0533d2260df2c24a67"
+                      user_id:
+                        type: string
+                        format: mongoId
+                        example: "66595a4fece2643081b0ae8d"
+                      created_at:
+                        type: string
+                        format: ISO8601
+                        example: "2024-05-31T09:24:08.390Z"
+        "422":
+          description: Validation error
+        "404":
+          description: Tweet not found
+  /likes//tweets/{tweet_id}:
+    delete:
+      tags:
+        - likes
+      summary: unlike tweet
+      description: Unlike tweet
+      operationId: unlikeTweet
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: tweet_id
+          in: path
+          description: tweet_id to unlike
+          required: true
+          schema:
+            type: string
+            format: mongoId
+      responses:
+        "200":
+          description: Unlike tweet successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Unlike tweet successfully
+        "422":
+          description: Validation error
+        "404":
+          description: Tweet not found
+  # search routes
+  /search:
+    get:
+      tags:
+        - search
+      security:
+        - BearerAuth: []
+
+      summary: search tweets and panigation
+      parameters:
+        - in: query
+          name: content
+          required: true
+          schema:
+            type: string
+          description: The ID of the tweet
+        - in: query
+          name: page
+          required: true
+          schema:
+            type: integer
+            default: 1
+          description: Page number for pagination
+        - in: query
+          name: limit
+          required: true
+          schema:
+            type: integer
+            default: 10
+          description: Number of items per page
+        - in: query
+          name: media_type
+          required: false
+          schema:
+            $ref: "#/components/schemas/MediaTypeQuery"
+          description: "image, video"
+        - in: query
+          name: people_follow
+          required: false
+          schema:
+            $ref: "#/components/schemas/PeopleFollow"
+          description: "Everyone = '0', Following = '1' "
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Search successfully
+                  result:
+                    $ref: "#/components/schemas/SearchResult"
+
+        "401":
+          description: Unauthorized
 components:
   schemas:
     User:
@@ -734,6 +1349,267 @@ components:
         cover_photo:
           type: string
           example: "https://example.com/cover.jpg"
+    Mediatype:
+      type: number
+      enum: [Image, Video, HLS]
+    EncodingStatus:
+      type: number
+      enum: [Pending, Processing, Success, Failed]
+      example: 1
+    TweetAudience:
+      type: number
+      enum: [Everyone, TwitterCircle]
+      example: 0
+    TweetType:
+      type: number
+      description: "0: Tweet, 1: Retweet, 2: Comment, 3: Quote"
+      enum: [0, 1, 2, 3]
+      example: 0
+    TweetReqBody:
+      type: object
+      properties:
+        type:
+          $ref: "#/components/schemas/TweetType"
+        audience:
+          $ref: "#/components/schemas/TweetAudience"
+        content:
+          type: string
+          example: "This is a sample tweet."
+        parent_id:
+          type: string
+          format: mongoId
+          nullable: true
+          example: null
+        hashtags:
+          type: array
+          items:
+            type: string
+          example: ["#hashtag1", "#hashtag2"]
+        mentions:
+          description: user_id of mentioned is unique
+          type: array
+          items:
+            type: string
+            format: mongoId
+          example: ["6643289d17b1af0c288eff35", "6643289d17b1af0c288eff37"]
+        medias:
+          type: array
+          items:
+            type: object
+            properties:
+              url:
+                type: string
+              type:
+                $ref: "#/components/schemas/Mediatype"
+          example:
+            [
+              {
+                "url": "https://tweet-nest.s3.ap-southeast-1.amazonaws.com/images/example1.jpg",
+                "type": 0,
+              },
+              {
+                "url": "https://tweet-nest.s3.ap-southeast-1.amazonaws.com/images/example1.mp4",
+                "type": 1,
+              },
+            ]
+    TweetResBody:
+      type: object
+      properties:
+        _id:
+          type: string
+          format: mongoId
+          example: "6657396c96dd7638a3bf4543"
+        user_id:
+          type: string
+          format: mongoId
+          example: "6657396c96dd7638a3bf4a70"
+        type:
+          $ref: "#/components/schemas/TweetType"
+        audience:
+          $ref: "#/components/schemas/TweetAudience"
+        content:
+          type: string
+          example: "This is a sample tweet."
+        parent_id:
+          type: string
+          format: mongoId
+          nullable: true
+          example: null
+        hashtags:
+          type: array
+          items:
+            type: string
+          example: ["#hashtag1", "#hashtag2"]
+        mentions:
+          type: array
+          items:
+            type: string
+            format: mongoId
+          example: ["6643289d17b1af0c288eff35", "6643289d17b1af0c288eff35"]
+        medias:
+          type: array
+          items:
+            type: object
+            properties:
+              url:
+                type: string
+              type:
+                $ref: "#/components/schemas/Mediatype"
+          example:
+            [
+              {
+                "url": "https://tweet-nest.s3.ap-southeast-1.amazonaws.com/images/example1.jpg",
+                "type": 0,
+              },
+              {
+                "url": "https://tweet-nest.s3.ap-southeast-1.amazonaws.com/images/example1.mp4",
+                "type": 1,
+              },
+            ]
+        guest_view:
+          type: number
+          example: 0
+        user_view:
+          type: number
+          example: 0
+        created_at:
+          type: string
+          format: ISO8601
+          example: "2024-05-31T09:24:08.390Z"
+        updated_at:
+          type: string
+          format: ISO8601
+          example: "2024-05-31T09:24:08.390Z"
+    Tweet:
+      type: object
+      properties:
+        _id:
+          type: string
+          format: mongoId
+          example: "6657396c96dd7638a3bf4543"
+        user_id:
+          type: string
+          format: mongoId
+          example: "6657396c96dd7638a3bf4a70"
+        type:
+          $ref: "#/components/schemas/TweetType"
+        audience:
+          $ref: "#/components/schemas/TweetAudience"
+        content:
+          type: string
+          example: "This is a sample tweet."
+        parent_id:
+          type: string
+          format: mongoId
+          nullable: true
+          example: null
+        hashtags:
+          type: array
+          items:
+            type: string
+          example: ["#hashtag1", "#hashtag2"]
+        mentions:
+          type: array
+          items:
+            type: string
+            format: mongoId
+          example: ["6643289d17b1af0c288eff35", "6643289d17b1af0c288eff35"]
+        medias:
+          type: array
+          items:
+            type: object
+            properties:
+              url:
+                type: string
+              type:
+                $ref: "#/components/schemas/Mediatype"
+          example:
+            [
+              {
+                "url": "https://tweet-nest.s3.ap-southeast-1.amazonaws.com/images/example1.jpg",
+                "type": 0,
+              },
+              {
+                "url": "https://tweet-nest.s3.ap-southeast-1.amazonaws.com/images/example1.mp4",
+                "type": 1,
+              },
+            ]
+        guest_view:
+          type: number
+          example: 0
+        user_view:
+          type: number
+          example: 0
+        created_at:
+          type: string
+          format: ISO8601
+          example: "2024-05-31T09:24:08.390Z"
+        updated_at:
+          type: string
+          format: ISO8601
+          example: "2024-05-31T09:24:08.390Z"
+        bookmarks:
+          type: number
+          example: 0
+        likes:
+          type: number
+          example: 0
+        retweet_count:
+          type: number
+          example: 0
+        comment_count:
+          type: number
+          example: 0
+        quote_count:
+          type: number
+          example: 0
+    GetTweetChildResBody:
+      type: object
+      properties:
+        tweets:
+          type: array
+          items:
+            $ref: "#/components/schemas/Tweet"
+        tweet_type:
+          type: number
+          example: 1
+        limit:
+          type: number
+          example: 10
+        page:
+          type: number
+          example: 1
+        total_pages:
+          type: number
+          example: 1
+    SearchResult:
+      type: object
+      properties:
+        tweets:
+          type: array
+          items:
+            $ref: "#/components/schemas/Tweet"
+        total:
+          type: number
+          example: 1
+        limit:
+          type: number
+          example: 10
+        page:
+          type: number
+          example: 1
+        total_pages:
+          type: number
+          example: 10
+
+    MediaTypeQuery:
+      type: string
+      enum: [image, video]
+      example: "image"
+    PeopleFollow:
+      type: string
+      enum: ["0", "1"]
+      example: "0"
   securitySchemes:
     BearerAuth:
       type: http
