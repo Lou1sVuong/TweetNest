@@ -13,6 +13,12 @@ import likesRouters from '~/routes/likes.routes'
 import searchRouters from '~/routes/search.routes'
 import { createServer } from 'http'
 import { Server } from 'socket.io'
+import swaggerUi from 'swagger-ui-express'
+import YAML from 'yaml'
+import fs from 'fs'
+import path from 'path'
+const file = fs.readFileSync(path.resolve('TweetNest-SWG.yaml'), 'utf8')
+const swaggerDocument = YAML.parse(file)
 
 // create fake users data ( uncomment this line bellow to create fake data)
 // import '~/utils/fakeData'
@@ -34,6 +40,8 @@ const port = process.env.PORT || 4000
 initFolder()
 // Middlewares for parsing body
 app.use(express.json())
+// Routes for swagger api-docs
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
 // Routes for users
 app.use('/users', usersRouters)
 // Routes for medias
