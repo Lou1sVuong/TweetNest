@@ -962,7 +962,7 @@ paths:
           description: Validation error
         "404":
           description: Tweet not found
-  /bookmarks//tweets/{tweet_id}:
+  /bookmarks/tweets/{tweet_id}:
     delete:
       tags:
         - bookmarks
@@ -1050,7 +1050,7 @@ paths:
           description: Validation error
         "404":
           description: Tweet not found
-  /likes//tweets/{tweet_id}:
+  /likes/tweets/{tweet_id}:
     delete:
       tags:
         - likes
