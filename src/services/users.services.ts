@@ -1,5 +1,4 @@
 import Follower from '~/models/schemas/follower.schemas'
-import { config } from 'dotenv'
 import { ObjectId } from 'mongodb'
 import { tokenType, userVerificationStatus } from '~/constants/enums'
 import { USERS_MESSAGES } from '~/constants/messages'
@@ -10,7 +9,7 @@ import databaseServices from '~/services/database.services'
 import { hashPassword } from '~/utils/crypto'
 import { signToken, verifyToken } from '~/utils/jwt'
 import { sendForgotPassWordEmail, sendVerifyRegisterEmail } from '~/utils/email'
-config()
+import { envConfig } from '~/constants/config'
 
 class UsersService {
   private signAccessToken({ user_id, verify }: { user_id: string; verify: userVerificationStatus }) {
@@ -20,9 +19,9 @@ class UsersService {
         token_type: tokenType.AccessToken,
         verify
       },
-      privateKey: process.env.JWT_SECRET_ACCESS_TOKEN as string,
+      privateKey: envConfig.jwtSecretAccessToken,
       options: {
-        expiresIn: process.env.ACCESS_EXPIRES_IN
+        expiresIn: envConfig.accessTokenExpiresIn
       }
     })
   }
@@ -44,7 +43,7 @@ class UsersService {
           verify,
           exp
         },
-        privateKey: process.env.JWT_SECRET_REFRESH_TOKEN as string
+        privateKey: envConfig.jwtSecretRefreshToken
       })
     }
     return signToken({
@@ -53,9 +52,9 @@ class UsersService {
         token_type: tokenType.RefreshToken,
         verify
       },
-      privateKey: process.env.JWT_SECRET_REFRESH_TOKEN as string,
+      privateKey: envConfig.jwtSecretRefreshToken,
       options: {
-        expiresIn: process.env.REFRESH_EXPIRES_IN
+        expiresIn: envConfig.refreshTokenExpiresIn
       }
     })
   }
@@ -67,9 +66,9 @@ class UsersService {
         token_type: tokenType.EmailVerificationToken,
         verify
       },
-      privateKey: process.env.JWT_SECRET_EMAIL_VERIFY_TOKEN as string,
+      privateKey: envConfig.jwtSecretEmailVerifyToken,
       options: {
-        expiresIn: process.env.EMAIL_VERIFY_TOKEN_EXPIRES_IN
+        expiresIn: envConfig.emailVerifyTokenExpiresIn
       }
     })
   }
@@ -81,9 +80,9 @@ class UsersService {
         token_type: tokenType.EmailVerificationToken,
         verify
       },
-      privateKey: process.env.JWT_SECRET_FORGOT_PASSWORD_TOKEN as string,
+      privateKey: envConfig.jwtSecretForgotPassToken,
       options: {
-        expiresIn: process.env.FORGOT_PASSWORD_TOKEN_EXPIRES_IN
+        expiresIn: envConfig.forgotPasswordTokenExpiresIn
       }
     })
   }
@@ -95,7 +94,7 @@ class UsersService {
   private decodeRefreshToken(refresh_token: string) {
     return verifyToken({
       token: refresh_token,
-      secretOrPublickey: process.env.JWT_SECRET_REFRESH_TOKEN as string
+      secretOrPublickey: envConfig.jwtSecretRefreshToken
     })
   }
 

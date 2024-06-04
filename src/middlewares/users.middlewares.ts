@@ -13,6 +13,7 @@ import { ObjectId } from 'mongodb'
 import { TokenPayload } from '~/models/requests/user.requests'
 import { userVerificationStatus } from '~/constants/enums'
 import { REGEX_USERNAME } from '~/constants/regex'
+import { envConfig } from '~/constants/config'
 
 const passwordShema: ParamSchema = {
   isString: {
@@ -70,7 +71,7 @@ const forgotPasswordToken: ParamSchema = {
       try {
         const decoded_forgot_password_token = await verifyToken({
           token: value,
-          secretOrPublickey: process.env.JWT_SECRET_FORGOT_PASSWORD_TOKEN as string
+          secretOrPublickey: envConfig.jwtSecretForgotPassToken
         })
         const { user_id } = decoded_forgot_password_token
         const user = await databaseServices.users.findOne({
@@ -272,7 +273,7 @@ export const accessTokenValidation = validate(
             try {
               const decoded_authorization = await verifyToken({
                 token: access_token,
-                secretOrPublickey: process.env.JWT_SECRET_ACCESS_TOKEN as string
+                secretOrPublickey: envConfig.jwtSecretAccessToken
               })
               ;(req as Request).decoded_authorization = decoded_authorization
             } catch (error) {
@@ -305,7 +306,7 @@ export const refreshTokenValidation = validate(
             }
             try {
               const [decoded_refresh_token, refresh_token] = await Promise.all([
-                verifyToken({ token: value, secretOrPublickey: process.env.JWT_SECRET_REFRESH_TOKEN as string }),
+                verifyToken({ token: value, secretOrPublickey: envConfig.jwtSecretRefreshToken }),
                 databaseServices.refreshTokens.findOne({ token: value })
               ])
               if (refresh_token === null) {
@@ -351,7 +352,7 @@ export const emailVerifyTokenValidation = validate(
             try {
               const decoded_email_verify_token = await verifyToken({
                 token: value,
-                secretOrPublickey: process.env.JWT_SECRET_EMAIL_VERIFY_TOKEN as string
+                secretOrPublickey: envConfig.jwtSecretEmailVerifyToken
               })
               ;(req as Request).decoded_email_verify_token = decoded_email_verify_token
             } catch (error) {
