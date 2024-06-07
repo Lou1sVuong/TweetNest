@@ -1,10 +1,12 @@
 import { config } from 'dotenv'
-import { access } from 'fs'
 import argv from 'minimist'
 const options = argv(process.argv.slice(2))
-export const isProduction = Boolean(options.production)
+console.log(options)
+export const isProduction = options.env === 'production'
 
-config()
+config({
+  path: options.env ? `.env.${options.env}` : '.env'
+})
 export const envConfig = {
   host: process.env.HOST as string,
   dbUsername: process.env.DB_USERNAME as string,
