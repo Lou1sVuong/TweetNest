@@ -17,7 +17,6 @@
   },
   "files": ["src/type.d.ts"], // Các file dùng để defined global type cho dự án
   "include": [
-    "api/*.ts",
     "src/**/*"
     ] // Đường dẫn include cho các file cần build
 }
