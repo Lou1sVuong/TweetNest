@@ -127,7 +127,7 @@ class UsersService {
     // 4. server verify email của user
     // 5. client nhận được access_token và refresh_token
     await sendVerifyRegisterEmail(payload.email, payload.name, email_verify_token)
-    // console.log('email_verification_token : ', email_verify_token)
+    console.log('email_verification_token : ', email_verify_token)
     return { access_token, refresh_token }
   }
   async refreshToken({
@@ -210,7 +210,7 @@ class UsersService {
       verify: userVerificationStatus.Verified
     })
     await sendVerifyRegisterEmail(email, name, email_verify_token)
-    // console.log('Resend email verify token : ', email_verify_token)
+    console.log('Resend email verify token : ', email_verify_token)
     await databaseServices.users.updateOne(
       { _id: new ObjectId(user_id) },
       {
@@ -251,7 +251,7 @@ class UsersService {
     )
     // gửi email chứa link reset password đến email của user : http://localhost:3000/reset-password?token=forgot_password_token
     sendForgotPassWordEmail(email, name, forgot_password_token)
-    // console.log('Forgot password token : ', forgot_password_token)
+    console.log('Forgot password token : ', forgot_password_token)
     return {
       message: USERS_MESSAGES.CHECK_EMAIL_TO_RESET_PASSWORD
     }
