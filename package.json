@@ -8,7 +8,7 @@
     "dev:prod": "npx nodemon --env=production",
     "build": "rimraf ./dist && tsc && tsc-alias",
     "start:dev": "node dist/index.js --env=development",
-    "start:prod": "node dist/index.js --env=production",
+    "start:prod": "node dist/index.js",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "prettier": "prettier --check .",
