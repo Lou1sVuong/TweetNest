@@ -35,7 +35,7 @@ databaseServices.connect().then(() => {
 const app = express()
 const httpServer = createServer(app)
 app.use(cors())
-const port = envConfig.port
+const port = process.env.PORT || envConfig.port
 // init folder uploads
 initFolder()
 // Middlewares for parsing body
@@ -70,8 +70,11 @@ const io = new Server(httpServer, {
 io.on('connection', (socket) => {
   console.log(socket)
 })
-httpServer.listen(port, () => {
-  console.log(`Server is running at port :${port}`)
-})
 
-export default app
+if (require.main === module) {
+  httpServer.listen(port, () => {
+    console.log(`Server is running at port :${port}`)
+  })
+}
+
+export { app, httpServer }

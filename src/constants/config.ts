@@ -8,11 +8,11 @@ config({
   path: options.env ? `.env.${options.env}` : '.env'
 })
 export const envConfig = {
+  port: process.env.PORT || 4000,
   host: process.env.HOST as string,
   dbUsername: process.env.DB_USERNAME as string,
   dbPassword: process.env.DB_PASSWORD as string,
   dbName: process.env.DB_NAME as string,
-  port: (process.env.PORT as string) || 4000,
   clientUrl: process.env.CLIENT_URL as string,
   awsRegion: process.env.AWS_REGION as string,
   awsSecretAccessKey: process.env.AWS_SECRET_ACCESS_KEY as string,
