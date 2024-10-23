@@ -16,5 +16,7 @@
     "require": ["tsconfig-paths/register"]
   },
   "files": ["src/type.d.ts"], // Các file dùng để defined global type cho dự án
-  "include": ["./api/*.ts"] // Đường dẫn include cho các file cần build
+  "include": [
+    "src/**/*"
+    ] // Đường dẫn include cho các file cần build
 }
